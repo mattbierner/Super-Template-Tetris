@@ -1,0 +1,1 @@
+cp new_game.h current_game.h
