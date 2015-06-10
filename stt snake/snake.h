@@ -79,7 +79,7 @@ struct put_food<state,
     
     using type = typename state
         ::template set_world<
-            put_grid<
+            grid_put<
                 targetPosition,
                 FoodCell,
                 typename state::world>>

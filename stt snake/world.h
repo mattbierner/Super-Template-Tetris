@@ -16,7 +16,7 @@ template <
     typename position,
     Direction direction>
 using InitialWorld =
-    put_grid<
+    grid_put<
         position,
         MakeSnakeCell<1, direction>,
         gen_grid<worldSize, EmptyCell>>;
@@ -35,7 +35,7 @@ using is_in_bounds =
 template <typename cell, typename pos, typename world>
 struct is_type :
     std::integral_constant<bool,
-        get_grid<pos, world>::state == cell::state> { };
+        grid_get<pos, world>::state == cell::state> { };
 
 /**
     Is the cell at `pos` in `world` empty?
@@ -69,19 +69,19 @@ struct is_free :
 template <typename pos, typename world>
 struct get_weight :
     std::integral_constant<size_t,
-        get_grid<pos, world>::weight> { };
+        grid_get<pos, world>::weight> { };
 
 /**
     Extend that snake by one cell.
 */
 template <size_t weight, Direction direction, typename pos, typename world>
-using grow_snake = put_grid<pos, MakeSnakeCell<weight, direction>, world>;
+using grow_snake = grid_put<pos, MakeSnakeCell<weight, direction>, world>;
 
 /**
     Mark that a collision took place at `pos` in `world`.
 */
 template <typename pos, typename world>
-using mark_collision = put_grid<pos, CollisionCell, world>;
+using mark_collision = grid_put<pos, CollisionCell, world>;
 
 
 /**

@@ -11,7 +11,7 @@ struct Printer;
 template <typename T, T x>
 struct Printer<std::integral_constant<T, x>>
 {
-    static void Print(std::ostream& output)
+    static void Print(std::wostream& output)
     {
         output << x;
     }

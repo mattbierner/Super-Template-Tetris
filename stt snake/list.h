@@ -151,16 +151,16 @@ struct Foldable<f, z, List<x, xs...>> {
 /*------------------------------------------------------------------------------
     Functor
 */
-template <template<typename> class f>
-struct Fmap<List<>, f> {
+template <typename f>
+struct Fmap<f, List<>> {
     using type = List<>;
 };
 
-template <typename x, typename... xs, template<typename> class f>
-struct Fmap<List<x, xs...>, f> {
+template <typename f, typename x, typename... xs>
+struct Fmap<f, List<x, xs...>> {
     using type = cons_t<
-        typename f<x>::type,
-        fmap_t<List<xs...>, f>>;
+        call<f, x>,
+        fmap_t<f, List<xs...>>>;
 };
 
 /*------------------------------------------------------------------------------

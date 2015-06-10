@@ -24,14 +24,6 @@ void serialize_game()
     s.close();
 }
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
-
 /**
     Print out the result of the game.
 */
@@ -53,14 +45,26 @@ int main(int argc, const char* argv[])
     serialize_game<game>();
 */
 
-    using game = gen_buffer<6, 6, Cell<'a', Color::Red>>;
+    using game = gen_grid<6, 6, Pixel<'a', Color::Red>>;
 
-    using block = gen_buffer<2, 2, Cell<'x', Color::Green>>;
+    using block = gen_grid<2, 2, Pixel<'x', Color::Green>>;
+    using block2 = gen_grid<1, 3, Pixel<'x', Color::Magenta, Color::Blue>>;
 
-    using g2 = typename draw_grid<Position<1, 1>, block, game>::type;
+   /* using g2 = typename draw_grid<
+        Position<1, 0>,
+        block2,
+        typename draw_grid<
+            Position<1, 1>,
+            block,
+            game>::type>::type;*/
+    
+    using g2 = buffer_draw_line<
+        Position<1, 0>,
+        Orientation::Vertical,
+        3,
+        game>;
 
     Printer<g2>::Print(std::cout);
-
     return 0;
 }
 

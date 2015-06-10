@@ -47,7 +47,7 @@ struct Join<joiner>
     Basic Type Serialization
 */
 template <>
-struct Serialize<bool> { static std::ostream& Write(std::ostream& output) { return output << "bool"; } };
+struct Serialize<bool> { static std::ostream& Write(std::ostream& output) { return output << "boo"; } };
 
 template <>
 struct Serialize<int> { static std::ostream& Write(std::ostream& output) { return output << "int"; } };
