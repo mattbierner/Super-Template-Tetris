@@ -70,7 +70,7 @@ using buffer_draw_line =
     typename draw_grid<
         origin,
         std::conditional_t<orientation == Orientation::Vertical,
-            gen_grid<1, len, Pixel<'l'>>,
+            gen_grid<1, len, Pixel<'l', Color::Default, Color::White>>,
             gen_grid<len, 1, Pixel<'-'>>>,
         buffer>::type;
 
