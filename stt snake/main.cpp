@@ -58,10 +58,10 @@ int main(int argc, const char* argv[])
             block,
             game>::type>::type;*/
     
-    using g2 = buffer_draw_line<
-        Position<1, 0>,
-        Orientation::Vertical,
-        3,
+    using g2 = buffer_draw_rect_outline<
+        Position<1, 1>,
+        4,
+        4,
         default_gfx::setBg<Color::Blue>,
         game>;
 

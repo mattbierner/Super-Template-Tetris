@@ -74,3 +74,12 @@ using buffer_draw_line =
             gen_grid<len, 1, Pixel<' ', gfx>>>,
         buffer>::type;
 
+/**
+    Draw a empty box.
+*/
+template <typename origin, size_t width, size_t height, typename gfx, typename buffer>
+using buffer_draw_rect_outline =
+    buffer_draw_line<origin, Orientation::Horizontal, width, gfx,
+        buffer_draw_line<origin, Orientation::Vertical, height, gfx,
+            buffer_draw_line<typename origin::template add<Position<0, height - 1>>, Orientation::Horizontal, width, gfx,
+                buffer_draw_line<typename origin::template add<Position<width - 1, 0>>, Orientation::Vertical, height, gfx, buffer>>>>;
