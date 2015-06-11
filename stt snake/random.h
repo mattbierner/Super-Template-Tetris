@@ -58,7 +58,7 @@ struct cdr<std::integer_sequence<T, x, xs...>> {
 };
 
 template <typename list>
-using cdr_t = typename cdr<list>::type;
+using cdr = typename cdr<list>::type;
 
 /**
     Prepend a value onto an `integer_sequence`.
@@ -105,7 +105,7 @@ template <size_t N, typename T, T... xs>
 struct take<N, std::integer_sequence<T, xs...>> {
     using type = cons_t<
         typename take<N - 1,
-            cdr_t<std::integer_sequence<T, xs...>>>::type,
+            cdr<std::integer_sequence<T, xs...>>>::type,
         car<std::integer_sequence<T, xs...>>::value>;
 };
 

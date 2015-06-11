@@ -17,6 +17,11 @@ struct Grid {
     
     static const size_t width = get_t<0, r>::size;
     static const size_t height = rows::size;
+    
+    template <typename pos>
+    using nextPosition = Position<
+        (pos::x + 1) % width,
+        pos::x + 1 == width ? pos::y + 1 : pos::y>;
 };
 
 /**
@@ -47,6 +52,33 @@ using grid_put = Grid<
 template <typename f, typename pos, typename grid>
 using grid_check = call<f, grid_get<pos, grid>>;
 
+
+/**
+    Transform a grid into a grid of cordinate value pairs.
+*/
+template <typename g>
+struct GridZipPositions {
+    struct inner {
+        template <typename p, typename c>
+        struct apply {
+            using pos = car<p>;
+            using grid = caar<p>;
+            using nextPos = typename grid::template nextPosition<pos>;
+            using type = List<
+                nextPos,
+                grid_put<pos, List<pos, c>, grid>>;
+        };
+    };
+    
+    using type = caar<fold<
+        inner,
+        List<Position<0, 0>, g>,
+        g>>;
+};
+
+template <typename g>
+using grid_zip_positions = typename GridZipPositions<g>::type;
+
 /*------------------------------------------------------------------------------
     Printer
 */
@@ -72,8 +104,13 @@ struct Printer<Grid<List<x, xs...>>>
 */
 template <typename f, typename z, typename rows>
 struct Foldable<f, z, Grid<rows>> {
+    struct inner {
+        template <typename p, typename c>
+        using apply = identity<fold<f, p, c>>;
+    };
+
     using type = fold<
-        partial<mfunc<fold>, f>,
+        inner,
         z,
         rows>;
 };
@@ -83,9 +120,14 @@ struct Foldable<f, z, Grid<rows>> {
 */
 template <typename f, typename rows>
 struct Fmap<f, Grid<rows>> {
+    struct inner {
+        template <typename x>
+        using apply = identity<fmap_t<f, x>>;
+    };
+    
     using type = Grid<
         fmap_t<
-            partial<mfunc<fmap_t>, f>,
+            inner,
             rows>>;
 };
 

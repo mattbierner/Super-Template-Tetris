@@ -7,6 +7,7 @@
 #include "list.h"
 #include "buffer.h"
 //#include "snake.h"
+#include "blocks.h"
 
 /**
     Save the output state
@@ -58,6 +59,13 @@ int main(int argc, const char* argv[])
             block,
             game>::type>::type;*/
     
+    struct xxxx {
+        template <typename x>
+        using apply = identity<typename to_px<x>::type>;
+    };
+    
+    using x = fmap_t<xxxx, SBlock::rotateCw::rotateCw::rotateCw::pieces>;
+    
     using g2 = buffer_draw_rect_outline<
         Position<1, 1>,
         4,
@@ -65,7 +73,8 @@ int main(int argc, const char* argv[])
         default_gfx::setBg<Color::Blue>,
         game>;
 
-    Printer<g2>::Print(std::cout);
+
+    Printer<x>::Print(std::cout);
     return 0;
 }
 

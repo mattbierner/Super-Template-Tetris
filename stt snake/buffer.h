@@ -28,10 +28,10 @@ template <typename origin, typename row, typename grid>
 struct draw_row {
     using type = try_grid_put<
         origin,
-        car_t<row>,
+        car<row>,
         typename draw_row<
             typename origin::template add<Position<1, 0>>,
-            cdr_t<row>,
+            cdr<row>,
             grid>::type>;
 };
 
@@ -50,10 +50,10 @@ template <typename origin, typename otherRows, typename g>
 struct draw_grid<origin, Grid<otherRows>, g> {
     using type = typename draw_row<
         origin,
-        car_t<otherRows>,
+        car<otherRows>,
         typename draw_grid<
             typename origin::template add<Position<0, 1>>,
-            Grid<cdr_t<otherRows>>,
+            Grid<cdr<otherRows>>,
             g>::type>::type;
 };
 

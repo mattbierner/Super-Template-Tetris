@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iomanip>
-
+/**
+    Supported drawing colors.
+*/
 enum class Color
 {
     Default,
@@ -16,7 +17,7 @@ enum class Color
 };
 
 /**
-       Draws a character with a foreground and background color.
+    Styling that tells how to render pixels.
 */
 template <Color fg, Color bg>
 struct Gfx {
@@ -30,6 +31,9 @@ struct Gfx {
     using setFg = Gfx<newColor, bg>;
 };
 
+/**
+    Use standard graphics.
+*/
 using default_gfx = Gfx<Color::Default, Color::Default>;
 
 /**
@@ -37,16 +41,32 @@ using default_gfx = Gfx<Color::Default, Color::Default>;
     
     Draws a character with a foreground and background color.
 */
-template <char val, typename gfx>
+template <char val, typename gfx = default_gfx>
 struct Pixel {
     static const char value = val;
     static const Color foreground = gfx::foreground;
     static const Color background = gfx::background;
 };
 
+/**
+    Transparent / nothing pixel.
+    
+    Will not be drawn when combining grids.
+*/
+using empty_pixel = Pixel<'\0'>;
+
 /*------------------------------------------------------------------------------
     Printer
 */
+template <typename gfx>
+struct Printer<Pixel<'\0', gfx>>
+{
+    static void Print(std::ostream& output)
+    {
+        output << ' ';
+    }
+};
+
 template <char val, typename gfx>
 struct Printer<Pixel<val, gfx>>
 {

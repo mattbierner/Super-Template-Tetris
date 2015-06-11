@@ -28,7 +28,8 @@
 		89397A781B27FF2100160727 /* foldable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = foldable.h; sourceTree = "<group>"; };
 		89397A791B2814A900160727 /* grid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grid.h; sourceTree = "<group>"; };
 		89397A7A1B28172400160727 /* pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pixel.h; sourceTree = "<group>"; };
-		894C66831A6A0CCD00F4AF80 /* stt snake */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "stt snake"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89397A7B1B291ECD00160727 /* blocks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = blocks.h; sourceTree = "<group>"; };
+		894C66831A6A0CCD00F4AF80 /* stt tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "stt tetris"; sourceTree = BUILT_PRODUCTS_DIR; };
 		894C66861A6A0CCD00F4AF80 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		894C668D1A6A0CF800F4AF80 /* list.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
 		894C668E1A6A0E8300F4AF80 /* functor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functor.h; sourceTree = "<group>"; };
@@ -68,7 +69,7 @@
 		894C66841A6A0CCD00F4AF80 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				894C66831A6A0CCD00F4AF80 /* stt snake */,
+				894C66831A6A0CCD00F4AF80 /* stt tetris */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,6 +97,7 @@
 				89397A781B27FF2100160727 /* foldable.h */,
 				89397A791B2814A900160727 /* grid.h */,
 				89397A7A1B28172400160727 /* pixel.h */,
+				89397A7B1B291ECD00160727 /* blocks.h */,
 			);
 			name = tetris;
 			path = "stt snake";
@@ -118,7 +120,7 @@
 			);
 			name = "stt tetris";
 			productName = "stt snake";
-			productReference = 894C66831A6A0CCD00F4AF80 /* stt snake */;
+			productReference = 894C66831A6A0CCD00F4AF80 /* stt tetris */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */

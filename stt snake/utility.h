@@ -53,7 +53,7 @@ struct mfunc {
 template <typename f, typename... bound>
 struct partial {
     template <typename... args>
-    using apply = call<f, bound..., args...>;
+    using apply = identity<call<f, bound..., args...>>;
 };
 
 /**

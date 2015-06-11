@@ -22,6 +22,18 @@ enum class Orientation
 };
 
 /*------------------------------------------------------------------------------
+    Printer
+*/
+template <size_t x, size_t y>
+struct Printer<Position<x, y>>
+{
+    static void Print(std::ostream& output)
+    {
+        output << "<" << x << ", " << y << ">";
+    }
+};
+
+/*------------------------------------------------------------------------------
     Serialize
 */
 template <size_t x, size_t y>

@@ -20,29 +20,40 @@ struct List {
     Get the head of an list
 */
 template <typename list>
-struct car;
+struct Car;
 
 template <typename x, typename... xs>
-struct car<List<x, xs...>> {
+struct Car<List<x, xs...>> {
     using type = x;
 };
 
 template <typename list>
-using car_t = typename car<list>::type;
+using car = typename Car<list>::type;
+
 
 /**
     Get the rest of a list, excluding the head.
 */
 template <typename list>
-struct cdr;
+struct Cdr;
 
 template <typename x, typename... xs>
-struct cdr<List<x, xs...>> {
+struct Cdr<List<x, xs...>> {
     using type = List<xs...>;
 };
 
 template <typename list>
-using cdr_t = typename cdr<list>::type;
+using cdr = typename Cdr<list>::type;
+
+/**
+    Car helpers
+*/
+template <typename list>
+using caar = car<cdr<list>>;
+
+template <typename list>
+using caaar = car<cdr<cdr<list>>>;
+
 
 /**
     Prepend a value onto a list
@@ -118,8 +129,8 @@ using gen_t = typename gen<N, element>::type;
 template <typename f, typename s1, typename s2>
 struct zip {
     using type = cons_t<
-        call<f, car_t<s1>, car_t<s2>>,
-        zip<f, cdr_t<s1>, cdr_t<s2>>>;
+        call<f, car<s1>, car<s2>>,
+        zip<f, cdr<s1>, cdr<s2>>>;
 };
 
 template <typename f, typename s>
