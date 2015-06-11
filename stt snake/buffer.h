@@ -17,7 +17,7 @@ using Buffer = Grid<rows>;
 */
 template <typename pos, typename cell, typename g>
 using try_grid_put =
-    std::conditional_t<cell::value == ' ',
+    std::conditional_t<cell::value == '\0',
         g,
         grid_put<pos, cell, g>>;
 
@@ -65,12 +65,12 @@ struct draw_grid<origin, Grid<List<>>, g> {
 /**
     Draw a line.
 */
-template <typename origin, Orientation orientation, size_t len, typename buffer>
+template <typename origin, Orientation orientation, size_t len, typename gfx, typename buffer>
 using buffer_draw_line =
     typename draw_grid<
         origin,
         std::conditional_t<orientation == Orientation::Vertical,
-            gen_grid<1, len, Pixel<'l', Color::Default, Color::White>>,
-            gen_grid<len, 1, Pixel<'-'>>>,
+            gen_grid<1, len, Pixel<' ', gfx>>,
+            gen_grid<len, 1, Pixel<' ', gfx>>>,
         buffer>::type;
 

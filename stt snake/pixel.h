@@ -16,22 +16,39 @@ enum class Color
 };
 
 /**
+       Draws a character with a foreground and background color.
+*/
+template <Color fg, Color bg>
+struct Gfx {
+    static const Color foreground = fg;
+    static const Color background = bg;
+    
+    template <Color newColor>
+    using setBg = Gfx<fg, newColor>;
+    
+    template <Color newColor>
+    using setFg = Gfx<newColor, bg>;
+};
+
+using default_gfx = Gfx<Color::Default, Color::Default>;
+
+/**
     Smallest visual unit.
     
     Draws a character with a foreground and background color.
 */
-template <char val, Color fg = Color::Default, Color bg = Color::Default>
+template <char val, typename gfx>
 struct Pixel {
     static const char value = val;
-    static const Color foreground = fg;
-    static const Color background = bg;
+    static const Color foreground = gfx::foreground;
+    static const Color background = gfx::background;
 };
 
 /*------------------------------------------------------------------------------
     Printer
 */
-template <char val, Color fg, Color bg>
-struct Printer<Pixel<val, fg, bg>>
+template <char val, typename gfx>
+struct Printer<Pixel<val, gfx>>
 {
     static constexpr const char* colorReset =  "\x1b[0m";
 
@@ -69,6 +86,6 @@ struct Printer<Pixel<val, fg, bg>>
     
     static void Print(std::ostream& output)
     {
-        output << toFgCode(fg) << toBgCode(bg) << val << colorReset;
+        output << toFgCode(gfx::foreground) << toBgCode(gfx::background) << val << colorReset;
     }
 };

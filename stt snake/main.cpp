@@ -45,10 +45,10 @@ int main(int argc, const char* argv[])
     serialize_game<game>();
 */
 
-    using game = gen_grid<6, 6, Pixel<'a', Color::Red>>;
+    using game = gen_grid<6, 6, Pixel<'a', default_gfx::setFg<Color::Red>>>;
 
-    using block = gen_grid<2, 2, Pixel<'x', Color::Green>>;
-    using block2 = gen_grid<1, 3, Pixel<'x', Color::Magenta, Color::Blue>>;
+    using block = gen_grid<2, 2, Pixel<'x', default_gfx::setFg<Color::Green>>>;
+    using block2 = gen_grid<1, 3, Pixel<'x', default_gfx::setFg<Color::Magenta>::setBg<Color::Blue>>>;
 
    /* using g2 = typename draw_grid<
         Position<1, 0>,
@@ -62,6 +62,7 @@ int main(int argc, const char* argv[])
         Position<1, 0>,
         Orientation::Vertical,
         3,
+        default_gfx::setBg<Color::Blue>,
         game>;
 
     Printer<g2>::Print(std::cout);
