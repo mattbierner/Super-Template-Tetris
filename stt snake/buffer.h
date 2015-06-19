@@ -57,7 +57,7 @@ template <typename origin, Orientation orientation, typename str, typename gfx, 
 struct BufferDrawText;
 
 template <typename origin, Orientation orientation, typename gfx, typename buffer, char... chars>
-struct BufferDrawText<origin, orientation, string<chars...>, gfx, buffer> {
+struct BufferDrawText<origin, orientation, String<chars...>, gfx, buffer> {
     using type = buffer_draw_grid<
         origin,
         create_list_grid<orientation, List<Pixel<chars, gfx>...>>,

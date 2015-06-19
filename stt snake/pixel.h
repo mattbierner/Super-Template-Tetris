@@ -1,5 +1,7 @@
 #pragma once
 
+#include "string.h"
+
 /**
     Supported drawing colors.
 */
@@ -15,6 +17,20 @@ enum class Color
     Cyan,
     White
 };
+
+template <Color c>
+struct ColorToFgCode { using type = decltype("\x1b[39m"_string); };
+template <> struct ColorToFgCode<Color::Black> {    using type = decltype("\x1b[30m"_string); };
+template <> struct ColorToFgCode<Color::Red> {      using type = decltype("\x1b[31m"_string); };
+template <> struct ColorToFgCode<Color::Green> {    using type = decltype("\x1b[32m"_string); };
+template <> struct ColorToFgCode<Color::Yellow> {   using type = decltype("\x1b[33m"_string); };
+template <> struct ColorToFgCode<Color::Blue> {     using type = decltype("\x1b[34m"_string); };
+template <> struct ColorToFgCode<Color::Magenta> {  using type = decltype("\x1b[35m"_string); };
+template <> struct ColorToFgCode<Color::Cyan> {     using type = decltype("\x1b[36m"_string); };
+template <> struct ColorToFgCode<Color::White> {     using type = decltype("\x1b[37m"_string); };
+
+template <Color c>
+using color_to_fg_code = typename ColorToFgCode<c>::type;
 
 /**
     Styling that tells how to render pixels.
@@ -106,6 +122,7 @@ struct Printer<Pixel<val, gfx>>
     
     static void Print(std::ostream& output)
     {
-        output << toFgCode(gfx::foreground) << toBgCode(gfx::background) << val << colorReset;
+        Printer<color_to_fg_code<gfx::foreground>>::Print(output);
+        output << toBgCode(gfx::background) << val << colorReset;
     }
 };

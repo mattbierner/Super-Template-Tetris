@@ -1,3 +1,6 @@
+/**
+    Encode a string of characters as a type.
+*/
 #pragma once
 
 #include "printer.h"
@@ -6,28 +9,47 @@
     Character input.
 */
 template <char... chars>
-using string = std::integer_sequence<char, chars...>;
+struct String {
 
+    template <char... other>
+    using append = String<chars..., other...>;
+};
+
+/**
+*/
+template <typename l, typename r>
+struct StringJoin;
+
+template <typename l, char... rs>
+struct StringJoin<l, String<rs...>> {
+    using type = typename l::template append<rs...>;
+};
+
+template <typename l, typename r>
+using string_join = typename StringJoin<l, r>::type;
+
+/**
+*/
 template <typename T, T... chars>
 constexpr auto operator""_string()
 {
-    return string<chars...>{};
+    return String<chars...>{};
 }
 
 /*------------------------------------------------------------------------------
  * Printer
  */
 template <>
-struct Printer<string<>>
+struct Printer<String<>>
 {
     static std::ostream& Print(std::ostream& output) { return output; }
 };
 
 template <char x, char... xs>
-struct Printer<string<x, xs...>>
+struct Printer<String<x, xs...>>
 {
     static std::ostream& Print(std::ostream& output)
     {
-        return Printer<string<xs...>>::Print(output << x);
+        return Printer<String<xs...>>::Print(output << x);
     }
 };
