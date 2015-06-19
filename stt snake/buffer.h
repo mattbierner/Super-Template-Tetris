@@ -16,7 +16,7 @@ using empty_buffer = gen_grid<width, height, empty_pixel>;
 */
 template <typename pos, typename cell, typename g>
 using buffer_try_put =
-    std::conditional_t<cell::value == '\0',
+    std::conditional_t<std::is_same<cell, empty_pixel>::value,
         g,
         grid_put<pos, cell, g>>;
 

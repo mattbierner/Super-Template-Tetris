@@ -107,7 +107,7 @@ struct step<Input::Up, state> {
         };
         
         using type = branch_t<
-            playfield_is_colliding<typename next::position, typename next::block, typename next::world>::value,
+            playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
             identity<s>,
             con>;
     };

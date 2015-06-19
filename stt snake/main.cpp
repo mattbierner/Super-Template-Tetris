@@ -71,8 +71,8 @@ int main(int argc, const char* argv[])
     Printer<g>::Print(std::cout);
 
 
-    //Printer<InitialState>::Print(std::cout);
-    //Printer<step_t<Input::Up, InitialState>>::Print(std::cout);
+    Printer<InitialState>::Print(std::cout);
+    Printer<step_t<Input::Up, InitialState>>::Print(std::cout);
     //Printer<step_t<Input::None, step_t<Input::None, InitialState>>>::Print(std::cout);
     return 0;
 }
