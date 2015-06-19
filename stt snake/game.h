@@ -113,7 +113,7 @@ struct step<Input::Up, state> {
     };
     
     
-    using type = typename Drop<state>::type;
+    using type = typename Drop<state>::type::place_initial_piece;
 };
 
 /**
