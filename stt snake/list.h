@@ -59,15 +59,15 @@ using caaar = car<cdr<cdr<list>>>;
     Prepend a value onto a list
 */
 template <typename x, typename list>
-struct cons;
+struct Cons;
 
 template <typename x, typename... xs>
-struct cons<x, List<xs...>> {
+struct Cons<x, List<xs...>> {
      using type = List<x, xs...>;
 };
 
 template <typename x, typename list>
-using cons_t = typename cons<x, list>::type;
+using cons = typename Cons<x, list>::type;
 
 /**
     Lookup a value in a list.
@@ -104,7 +104,7 @@ struct put<0, newValue, List<x, xs...>> {
 
 template <size_t N, typename newValue, typename x, typename... xs>
 struct put<N, newValue, List<x, xs...>> {
-    using type = cons_t<x, put_t<N - 1, newValue, List<xs...>>>;
+    using type = cons<x, put_t<N - 1, newValue, List<xs...>>>;
 };
 
 /**
@@ -112,7 +112,7 @@ struct put<N, newValue, List<x, xs...>> {
 */
 template <size_t N, typename element>
 struct gen {
-    using type = cons_t<element, typename gen<N - 1, element>::type>;
+    using type = cons<element, typename gen<N - 1, element>::type>;
 };
 
 template <typename element>
@@ -128,7 +128,7 @@ using gen_t = typename gen<N, element>::type;
 */
 template <typename f, typename s1, typename s2>
 struct zip {
-    using type = cons_t<
+    using type = cons<
         call<f, car<s1>, car<s2>>,
         zip<f, cdr<s1>, cdr<s2>>>;
 };
@@ -169,7 +169,7 @@ struct Fmap<f, List<>> {
 
 template <typename f, typename x, typename... xs>
 struct Fmap<f, List<x, xs...>> {
-    using type = cons_t<
+    using type = cons<
         call<f, x>,
         fmap_t<f, List<xs...>>>;
 };

@@ -53,13 +53,13 @@ struct Pixel {
     
     Will not be drawn when combining grids.
 */
-using empty_pixel = Pixel<'\0'>;
+struct empty_pixel { };
 
 /*------------------------------------------------------------------------------
     Printer
 */
-template <typename gfx>
-struct Printer<Pixel<'\0', gfx>>
+template <>
+struct Printer<empty_pixel>
 {
     static void Print(std::ostream& output)
     {

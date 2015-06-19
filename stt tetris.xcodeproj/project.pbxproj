@@ -42,6 +42,7 @@
 		894C66971A6A297700F4AF80 /* playfield.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfield.h; sourceTree = "<group>"; };
 		894C66981A6AF97D00F4AF80 /* boolean.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boolean.h; sourceTree = "<group>"; };
 		89C67C201B33B99100FB41AE /* block_generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = block_generator.h; sourceTree = "<group>"; };
+		89C67C211B33D4D000FB41AE /* string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string.h; sourceTree = "<group>"; };
 		89CECF591A6DFDA200138F41 /* serialize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = serialize.h; sourceTree = "<group>"; };
 		89CECF5B1A6E0C2200138F41 /* current_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = current_game.h; sourceTree = "<group>"; };
 		89CECF5C1A6E0F5F00138F41 /* get_input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = get_input.h; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 		894C66851A6A0CCD00F4AF80 /* tetris */ = {
 			isa = PBXGroup;
 			children = (
+				89C67C211B33D4D000FB41AE /* string.h */,
 				894C66861A6A0CCD00F4AF80 /* main.cpp */,
 				89C67C201B33B99100FB41AE /* block_generator.h */,
 				894C66931A6A1B8F00F4AF80 /* game.h */,

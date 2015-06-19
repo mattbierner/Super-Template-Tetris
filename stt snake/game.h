@@ -35,11 +35,8 @@ template <
     typename currentBlock,
     typename currentWorld,
     typename currentBlockGenerator>
-class State
+struct State
 {
-    using nextBlock = typename currentBlockGenerator::next::value;
-
-public:
     static constexpr const PlayerState playerState = currentPlayerState;
     static constexpr const unsigned score = currentScore;
     
@@ -49,7 +46,8 @@ public:
     using world = currentWorld;
     
     using random = currentBlockGenerator;
-    
+    using nextBlock = typename currentBlockGenerator::next::value;
+
     template <typename newPos>
     using set_position = State<playerState, score, newPos, block, world, random>;
     
@@ -96,6 +94,29 @@ struct step {
 };
 
 /**
+    Hard drop the current piece.
+*/
+template <typename state>
+struct step<Input::Up, state> {
+    template <typename s>
+    struct Drop {
+        using next = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
+        
+        struct con {
+            using type = typename Drop<next>::type;
+        };
+        
+        using type = branch_t<
+            playfield_is_colliding<typename next::position, typename next::block, typename next::world>::value,
+            identity<s>,
+            con>;
+    };
+    
+    
+    using type = typename Drop<state>::type;
+};
+
+/**
     For the case where we are dead, noop.
 */
 template <
@@ -125,39 +146,40 @@ template <
     typename blockGenerator>
 struct Printer<State<playerState, score, position, block, world, blockGenerator>>
 {
+    using self = State<playerState, score, position, block, world, blockGenerator>;
+    
     // Draw outline
     using initial_buffer = buffer_draw_rect_outline<
         Position<0, 0>,
         world::width + 2,
         world::height + 2,
-        '+',
-        default_gfx,
-        empty_buffer<world::width + 2, world::height + 2>>;
+        Pixel<'+', default_gfx>,
+        empty_buffer<world::width + 2 + 10, world::height + 2>>;
     
+    // Draw next block
+    using next_block = buffer_draw_grid<
+        Position<world::width + 2 + 2, 2>,
+        typename self::nextBlock::pieces,
+        initial_buffer>;
+        
     // Draw death area
     using death_buffer = buffer_draw_rect<
         Position<1, 1>,
         world::width,
-        2,
-        '-',
-        default_gfx,
-        initial_buffer>;
-    
-    struct xxxx {
-        template <typename x>
-        using apply = identity<typename to_px<x>::type>;
-    };
+        deathZoneHeight,
+        Pixel<'-', default_gfx>,
+        next_block>;
     
     // draw playfield
     using play_buffer = buffer_draw_grid<
         Position<1, 1>,
-        fmap_t<xxxx, world>,
+        world,
         death_buffer>;
 
     // Draw current block
     using buffer = buffer_draw_grid<
         Position<1, 1>::add<position>,
-        fmap_t<xxxx, typename block::pieces>,
+        typename block::pieces,
         play_buffer>;
 
     static void Print(std::ostream& output)

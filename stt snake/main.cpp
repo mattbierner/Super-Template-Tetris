@@ -48,31 +48,32 @@ int main(int argc, const char* argv[])
     serialize_game<game>();
 */
 
-    using game = gen_grid<6, 6, Pixel<'a', default_gfx::setFg<Color::Red>>>;
+    using game = gen_grid<6, 6, empty_pixel>;
 
     using block = gen_grid<2, 2, Pixel<'x', default_gfx::setFg<Color::Green>>>;
     using block2 = gen_grid<1, 3, Pixel<'x', default_gfx::setFg<Color::Magenta>::setBg<Color::Blue>>>;
 
-   /* using g2 = typename draw_grid<
-        Position<1, 0>,
-        block2,
-        typename draw_grid<
+   using g2 = //buffer_draw_grid<
+       // Position<1, 0>,
+        //block2,
+        buffer_draw_grid<
             Position<1, 1>,
             block,
-            game>::type>::type;*/
+            game>;
     
-
+    struct xx {
+        template <typename x>
+        using apply = identity<std::integral_constant<bool, x::value != '\0'>>;
+    };
     
-    using g2 = buffer_draw_rect_outline<
-        Position<1, 1>,
-        4,
-        4,
-        ' ',
-        default_gfx::setBg<Color::Blue>,
-        game>;
+    using g = typename PlayfieldIsColliding<Position<4, 4>, typename OBlock::pieces, g2>::type;
+
+    Printer<g>::Print(std::cout);
 
 
-    Printer<step_t<Input::None, InitialState>>::Print(std::cout);
+    //Printer<InitialState>::Print(std::cout);
+    //Printer<step_t<Input::Up, InitialState>>::Print(std::cout);
+    //Printer<step_t<Input::None, step_t<Input::None, InitialState>>>::Print(std::cout);
     return 0;
 }
 

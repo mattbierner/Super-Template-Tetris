@@ -6,13 +6,22 @@ struct Thunk {
 };
 
 /**
-    Encodes a boolean as a type so we can perform call by need operations on it.
+    Call by need logical and operation.
 */
 template <bool, typename right>  
 struct logical_and : right::type { };
 
 template <typename right>  
 struct logical_and<false, right> : std::false_type { };
+
+/**
+    Call by need logical or operation.
+*/
+template <bool, typename right>  
+struct logical_or : right::type { };
+
+template <typename right>  
+struct logical_or<true, right> : std::true_type { };
 
 /**
     Branch on `value` using call by need evaluation.

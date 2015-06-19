@@ -19,6 +19,9 @@ enum class BlockType
     Z
 };
 
+/**
+    Single tetris piece.
+*/
 template <BlockType k, size_t r, typename o>
 struct Block {
     static const BlockType kind = k;
@@ -30,65 +33,16 @@ struct Block {
     using rotateCCw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
 };
 
-
-template <BlockType k>
-struct Cell {
-    static const BlockType kind = k;
-};
-
-using x_cell = Cell<BlockType::None>;
-using i_cell = Cell<BlockType::I>;
-using j_cell = Cell<BlockType::J>;
-using l_cell = Cell<BlockType::L>;
-using o_cell = Cell<BlockType::O>;
-using s_cell = Cell<BlockType::S>;
-using t_cell = Cell<BlockType::T>;
-using z_cell = Cell<BlockType::Z>;
-
 /**
 */
-template <typename x>
-struct to_px;
-
-template <>
-struct to_px<Cell<BlockType::None>> {
-    using type = empty_pixel;
-};
-
-template <>
-struct to_px<Cell<BlockType::I>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Cyan>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::J>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Blue>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::L>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::White>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::O>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Yellow>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::S>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Green>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::T>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Magenta>>;
-};
-
-template <>
-struct to_px<Cell<BlockType::Z>> {
-    using type = Pixel<' ', default_gfx::setBg<Color::Red>>;
-};
+using x_cell = empty_pixel;
+using i_cell = Pixel<' ', default_gfx::setBg<Color::Cyan>>;
+using j_cell = Pixel<' ', default_gfx::setBg<Color::Blue>>;
+using l_cell = Pixel<' ', default_gfx::setBg<Color::White>>;
+using o_cell = Pixel<' ', default_gfx::setBg<Color::Yellow>>;
+using s_cell = Pixel<' ', default_gfx::setBg<Color::Green>>;
+using t_cell = Pixel<' ', default_gfx::setBg<Color::Magenta>>;
+using z_cell = Pixel<' ', default_gfx::setBg<Color::Red>>;
 
 /**
     Blocks.
@@ -155,7 +109,8 @@ using LBlock = Block<BlockType::L, 0,
             List<x_cell, l_cell, x_cell>>>>>;
 
 using OBlock = Block<BlockType::O, 0,
-    gen_grid<2, 2, o_cell>>;
+    List<
+        gen_grid<2, 2, o_cell>>>;
 
 using SBlock = Block<BlockType::S, 0,
     List<

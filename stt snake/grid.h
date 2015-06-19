@@ -2,8 +2,10 @@
 
 #include "list.h"
 #include "functor.h"
+#include "direction.h"
 #include "printer.h"
 #include "position.h"
+#include <type_traits>
 #include "utility.h"
 
 /**
@@ -29,6 +31,34 @@ struct Grid {
 */
 template <size_t width, size_t height, typename value>
 using gen_grid = Grid<gen_t<height, gen_t<width, value>>>;
+
+/**
+    Create a single line grid.
+*/
+template <Orientation orientation, size_t len, typename cell>
+using create_line_grid =
+    std::conditional_t<orientation == Orientation::Vertical,
+        gen_grid<1, len, cell>,
+        gen_grid<len, 1, cell>>;
+
+/**
+    Create a single line grid from a list.
+*/
+template <Orientation orientation, typename list>
+struct CreateLineGrid {
+    struct toCols {
+        template <typename x>
+        using apply = identity<List<x>>;
+    };
+    
+    using type = Grid<
+        std::conditional_t<orientation == Orientation::Vertical,
+            fmap_t<toCols, list>,
+            List<list>>>;
+};
+
+template <Orientation orientation, typename list>
+using create_list_grid = typename CreateLineGrid<orientation, list>::type;
 
 /**
     Get the element at `pos(x, y)` in a grid.
@@ -77,6 +107,31 @@ struct GridZipPositions {
 
 template <typename g>
 using grid_zip_positions = typename GridZipPositions<g>::type;
+
+/**
+    Is `pos` within the width of the grid?
+*/
+template <typename pos, typename g>
+using grid_is_in_xbounds =
+    std::integral_constant<bool,
+        (pos::x >= 0 && pos::x < g::width)>;
+
+
+/**
+    Is `pos` within the height of the grid?
+*/
+template <typename pos, typename g>
+using grid_is_in_ybounds =
+    std::integral_constant<bool,
+        (pos::y >= 0 && pos::y < g::height)>;
+
+/**
+    Is `pos` within the grid?
+*/
+template <typename pos, typename g>
+using grid_is_in_bounds =
+    std::integral_constant<bool,
+        grid_is_in_xbounds<pos, g>::value && grid_is_in_ybounds<pos, g>::value>;
 
 /*------------------------------------------------------------------------------
     Printer
