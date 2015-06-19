@@ -214,4 +214,7 @@ using ZBlock = Block<BlockType::Z, 0,
             List<z_cell, z_cell, x_cell>,
             List<z_cell, x_cell, x_cell>>>>>;
 
-
+/**
+    List of all blocks.
+*/
+using blocks = List<IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock>;

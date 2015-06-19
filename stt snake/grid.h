@@ -15,8 +15,8 @@ template <typename r>
 struct Grid {
     using rows = r;
     
-    static const size_t width = get_t<0, r>::size;
-    static const size_t height = rows::size;
+    static constexpr const size_t width = get_t<0, r>::size;
+    static constexpr const size_t height = rows::size;
     
     template <typename pos>
     using nextPosition = Position<
@@ -51,7 +51,6 @@ using grid_put = Grid<
 */
 template <typename f, typename pos, typename grid>
 using grid_check = call<f, grid_get<pos, grid>>;
-
 
 /**
     Transform a grid into a grid of cordinate value pairs.

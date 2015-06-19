@@ -6,9 +6,11 @@
 //#include "direction.h"
 #include "list.h"
 #include "buffer.h"
-//#include "snake.h"
+#include "playfield.h"
 #include "blocks.h"
-
+#include "block_generator.h"
+#include "game.h"
+ 
 /**
     Save the output state
 */
@@ -59,22 +61,18 @@ int main(int argc, const char* argv[])
             block,
             game>::type>::type;*/
     
-    struct xxxx {
-        template <typename x>
-        using apply = identity<typename to_px<x>::type>;
-    };
-    
-    using x = fmap_t<xxxx, SBlock::rotateCw::rotateCw::rotateCw::pieces>;
+
     
     using g2 = buffer_draw_rect_outline<
         Position<1, 1>,
         4,
         4,
+        ' ',
         default_gfx::setBg<Color::Blue>,
         game>;
 
 
-    Printer<x>::Print(std::cout);
+    Printer<step_t<Input::None, InitialState>>::Print(std::cout);
     return 0;
 }
 

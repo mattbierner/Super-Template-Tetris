@@ -43,9 +43,9 @@ using default_gfx = Gfx<Color::Default, Color::Default>;
 */
 template <char val, typename gfx = default_gfx>
 struct Pixel {
-    static const char value = val;
-    static const Color foreground = gfx::foreground;
-    static const Color background = gfx::background;
+    static constexpr const char value = val;
+    static constexpr const Color foreground = gfx::foreground;
+    static constexpr const Color background = gfx::background;
 };
 
 /**

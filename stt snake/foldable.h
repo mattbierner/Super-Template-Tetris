@@ -1,4 +1,5 @@
 /**
+    Foldalbe interface.
 */
 #pragma once
 

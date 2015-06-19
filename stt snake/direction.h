@@ -39,36 +39,6 @@ struct direction_delta_y<Direction::Up> : std::integral_constant<int, -1> { };
 template <>
 struct direction_delta_y<Direction::Down> : std::integral_constant<int, 1> { };
 
-/**
-    For a given input, determine the new direction.
-    
-    Allows moving at 0, 90, and -90 angles but no 180s (which results in a noop).
-*/
-template <Direction direction, Input input>
-struct get_new_direction : std::integral_constant<Direction, direction> { };
-
-template <Direction direction>
-struct get_new_direction<direction, Input::Up> : std::integral_constant<Direction, (direction == Direction::Down ? direction : Direction::Up)> { };
-
-template <Direction direction>
-struct get_new_direction<direction, Input::Down> : std::integral_constant<Direction, (direction == Direction::Up ? direction : Direction::Down)> { };
-
-template <Direction direction>
-struct get_new_direction<direction, Input::Left> : std::integral_constant<Direction, (direction == Direction::Right ? direction : Direction::Left)> { };
-
-template <Direction direction>
-struct get_new_direction<direction, Input::Right> : std::integral_constant<Direction, (direction == Direction::Left ? direction : Direction::Right)> { };
-
-/**
-    Move from `pos` in `direction`
-*/
-template <Direction direction, typename pos>
-using get_next_position =
-    Position<
-        pos::x + direction_delta_x<direction>::value,
-        pos::y + direction_delta_y<direction>::value>;
-
-
 /*------------------------------------------------------------------------------
     Serialize
 */

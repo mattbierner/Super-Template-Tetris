@@ -9,11 +9,8 @@ enum class Input : unsigned
     Up,
     Down,
     Left,
-    Right
+    Right,
+    LRot,
+    RRot
 };
 
-/**
-    List of sequential input commands.
-*/
-template <Input... inputs>
-using PlayerInput = std::integer_sequence<Input, inputs...>;

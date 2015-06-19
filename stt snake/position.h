@@ -3,10 +3,10 @@
 /**
     Position in two dimensional space.
 */
-template <size_t xVal, size_t yVal>
+template <int xVal, int yVal>
 struct Position {
-    static const size_t x = xVal;
-    static const size_t y = yVal;
+    static const int x = xVal;
+    static const int y = yVal;
     
     template <typename p2>
     using add = Position<x + p2::x, y + p2::y>;
@@ -24,7 +24,7 @@ enum class Orientation
 /*------------------------------------------------------------------------------
     Printer
 */
-template <size_t x, size_t y>
+template <int x, int y>
 struct Printer<Position<x, y>>
 {
     static void Print(std::ostream& output)
@@ -36,7 +36,7 @@ struct Printer<Position<x, y>>
 /*------------------------------------------------------------------------------
     Serialize
 */
-template <size_t x, size_t y>
+template <int x, int y>
 struct Serialize<Position<x, y>>
 {
     static std::ostream& Write(std::ostream& output)
