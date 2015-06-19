@@ -77,10 +77,14 @@ using grid_put = Grid<
         typename g::rows>>;
 
 /**
-    Run a function against a cell in the grid.
+    Modify the current value at pos using a function that takes the current value
+    and the value to be placed.
 */
-template <typename f, typename pos, typename grid>
-using grid_check = call<f, grid_get<pos, grid>>;
+template <typename combine, typename pos, typename value, typename g>
+using grid_try_put = grid_put<
+    pos,
+    call<combine, grid_get<pos, g>, value>,
+    g>;
 
 /**
     Transform a grid into a grid of cordinate value pairs.
@@ -132,6 +136,63 @@ template <typename pos, typename g>
 using grid_is_in_bounds =
     std::integral_constant<bool,
         grid_is_in_xbounds<pos, g>::value && grid_is_in_ybounds<pos, g>::value>;
+
+/**
+    Set the element at `pos(x, y)` in a grid to `value`.
+*/
+template <typename combine, typename origin, typename row, typename grid>
+struct GridPlaceRow {
+    struct IsInBounds {
+        using type = grid_try_put<
+            combine,
+            origin,
+            car<row>,
+            typename GridPlaceRow<
+                combine,
+                typename origin::template add<Position<1, 0>>,
+                cdr<row>,
+                grid>::type>;
+    };
+
+    using type = branch_t<grid_is_in_bounds<origin, grid>::value,
+        IsInBounds,
+        identity<grid>>;
+};
+
+template <typename combine, typename origin, typename grid>
+struct GridPlaceRow<combine, origin, List<>, grid> {
+    using type = grid;
+};
+
+template <typename combine, typename origin, typename row, typename grid>
+using grid_place_row = typename GridPlaceRow<combine, origin, row, grid>::type;
+
+/**
+    Draw another buffer on top of this buffer.
+*/
+template <typename combine, typename origin, typename other, typename grid>
+struct GridPlaceGrid;
+
+template <typename combine, typename origin, typename other, typename grid>
+using grid_place_grid = typename GridPlaceGrid<combine, origin, other, grid>::type;
+
+template <typename combine, typename origin, typename otherRows, typename g>
+struct GridPlaceGrid<combine, origin, Grid<otherRows>, g> {
+    using type = grid_place_row<
+        combine,
+        origin,
+        car<otherRows>,
+        grid_place_grid<
+            combine,
+            typename origin::template add<Position<0, 1>>,
+            Grid<cdr<otherRows>>,
+            g>>;
+};
+
+template <typename combine, typename origin, typename g>
+struct GridPlaceGrid<combine, origin, Grid<List<>>, g> {
+    using type = g;
+};
 
 /*------------------------------------------------------------------------------
     Printer

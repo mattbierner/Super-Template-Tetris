@@ -60,6 +60,8 @@ struct State
     template <typename newBlock>
     using set_block = State<playerState, score, position, newBlock, world, random>;
     
+    /**
+    */
     using place_initial_piece = State<
         playerState,
         score,
@@ -69,6 +71,16 @@ struct State
         nextBlock,
         world,
         typename random::next>;
+    
+    /**
+    */
+    using place_piece = typename State<
+        playerState,
+        score,
+        position,
+        block,
+        buffer_draw_grid<position, typename block::pieces, world>,
+        random>::place_initial_piece;
 };
 
 /**
@@ -93,6 +105,36 @@ struct step {
    using type = typename state::template set_position<typename state::position::template add<Position<0, 1>>>;
 };
 
+
+
+/**
+    Move Left.
+    
+    Also drops down by one.
+*/
+template <typename state>
+struct step<Input::Left, state> {
+    using next = typename state::template set_position<typename state::position::template add<Position<-1, 0>>>;
+
+    /**
+        Apply gravity to the current piece but keep it alive if it collides.
+    */
+    template <typename s>
+    struct Down {
+        using gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
+        
+        using type = std::conditional_t<
+            playfield_is_colliding<typename gnext::position, typename gnext::block::pieces, typename gnext::world>::value,
+            s,
+            gnext>;
+    };
+
+    using type = branch_t<
+        playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
+        Thunk<Down, state>,
+        Thunk<Down, next>>;
+};
+
 /**
     Hard drop the current piece.
 */
@@ -108,12 +150,12 @@ struct step<Input::Up, state> {
         
         using type = branch_t<
             playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
-            identity<s>,
+            identity<typename s::place_piece>,
             con>;
     };
     
     
-    using type = typename Drop<state>::type::place_initial_piece;
+    using type = typename Drop<state>::type;
 };
 
 /**

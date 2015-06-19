@@ -2,7 +2,7 @@
 
 template <template<typename...> class T, typename... args>  
 struct Thunk {  
-    using type = T<args...>;
+    using type = typename T<args...>::type;
 };
 
 /**

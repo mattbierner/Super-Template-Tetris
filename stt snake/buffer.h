@@ -23,49 +23,22 @@ using buffer_try_put =
 /**
     Set the element at `pos(x, y)` in a grid to `value`.
 */
-template <typename origin, typename rows, typename grid>
-struct DrawRow {
-    using type = buffer_try_put<
-        origin,
-        car<rows>,
-        typename DrawRow<
-            typename origin::template add<Position<1, 0>>,
-            cdr<rows>,
-            grid>::type>;
-};
-
-template <typename origin, typename grid>
-struct DrawRow<origin, List<>, grid> {
-    using type = grid;
+struct buffer_combine {
+    template <typename current, typename toPlace>
+    using apply =
+        std::conditional<std::is_same<toPlace, empty_pixel>::value,
+            current,
+            toPlace>;
 };
 
 template <typename origin, typename row, typename grid>
-using draw_row = typename DrawRow<origin, row, grid>::type;
+using draw_row = grid_place_row<buffer_combine, origin, row, grid>;
 
 /**
     Draw another buffer on top of this buffer.
 */
 template <typename origin, typename other, typename grid>
-struct DrawGrid;
-
-template <typename origin, typename other, typename grid>
-using buffer_draw_grid = typename DrawGrid<origin, other, grid>::type;
-
-template <typename origin, typename otherRows, typename g>
-struct DrawGrid<origin, Grid<otherRows>, g> {
-    using type = draw_row<
-        origin,
-        car<otherRows>,
-        typename DrawGrid<
-            typename origin::template add<Position<0, 1>>,
-            Grid<cdr<otherRows>>,
-            g>::type>;
-};
-
-template <typename origin, typename g>
-struct DrawGrid<origin, Grid<List<>>, g> {
-    using type = g;
-};
+using buffer_draw_grid = grid_place_grid<buffer_combine, origin, other, grid>;
 
 /**
     Draw a line.

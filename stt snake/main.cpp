@@ -27,6 +27,16 @@ void serialize_game()
     s.close();
 }
 
+template <typename s, Input... inputs>
+struct Play {
+    using type = List<s>;
+};
+
+template <typename s, Input x, Input... xs>
+struct Play<s, x, xs...> {
+    using type = cons<s, typename Play<step_t<x, s>, xs...>::type>;
+};
+
 /**
     Print out the result of the game.
 */
@@ -66,14 +76,14 @@ int main(int argc, const char* argv[])
         using apply = identity<std::integral_constant<bool, x::value != '\0'>>;
     };
     
-    using g = typename PlayfieldIsColliding<Position<4, 4>, typename OBlock::pieces, g2>::type;
+   // using g = buffer_draw_grid<Position<4, 1>, typename OBlock::pieces, game>;
 
-    Printer<g>::Print(std::cout);
+    //Printer<g>::Print(std::cout);
 
 
-    Printer<InitialState>::Print(std::cout);
-    Printer<step_t<Input::Up, InitialState>>::Print(std::cout);
-    //Printer<step_t<Input::None, step_t<Input::None, InitialState>>>::Print(std::cout);
+    Printer<typename Play<InitialState,
+        Input::Left, Input::Left, Input::Left, Input::Left, Input::Left>::type>::Print(std::cout);
+
     return 0;
 }
 
