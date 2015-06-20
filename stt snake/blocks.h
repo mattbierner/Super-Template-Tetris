@@ -24,17 +24,15 @@ enum class BlockType
 */
 template <BlockType k, size_t r, typename o>
 struct Block {
-    static const BlockType kind = k;
-    using orientations = o;
+    static constexpr const BlockType kind = k;
     
+    using orientations = o;
     using pieces = get_t<r, o>;
     
     using rotateCw = Block<k, (r + 1) % o::size, o>;
-    using rotateCCw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
+    using rotateCcw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
 };
 
-/**
-*/
 using x_cell = empty_pixel;
 using i_cell = Pixel<' ', default_gfx::setBg<Color::Cyan>>;
 using j_cell = Pixel<' ', default_gfx::setBg<Color::Blue>>;

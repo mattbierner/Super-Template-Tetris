@@ -122,6 +122,16 @@ struct move_block<Input::Right, state> {
     using type = typename state::template set_position<typename state::position::template add<Position<1, 0>>>;
 };
 
+template <typename state>
+struct move_block<Input::RRot, state> {
+    using type = typename state::template set_block<typename state::block::rotateCw>;
+};
+
+template <typename state>
+struct move_block<Input::LRot, state> {
+    using type = typename state::template set_block<typename state::block::rotateCcw>;
+};
+
 /**
     Move the block in response to player input.
     
