@@ -3,6 +3,7 @@
 */
 #pragma once
 
+#include "boolean.h"
 #include "printer.h"
 
 /**
@@ -50,6 +51,46 @@ constexpr auto operator""_string()
     return String<chars...>{};
 }
 
+/**
+    Convert an integer value into a string.
+*/
+template <size_t val>
+struct IntToString {
+    struct Rec {
+        using type =
+            string_join<
+                typename IntToString<val / 10>::type,
+                String<'0' + (val % 10)>>;
+    };
+
+    using type =
+        branch_t<(val < 10),
+            identity<String<'0' + (val % 10)>>,
+            Rec>;
+};
+
+template <size_t val>
+using int_to_string = typename IntToString<val>::type;
+
+static_assert(
+    std::is_same<
+        String<'0'>,
+        int_to_string<0>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'3'>,
+        int_to_string<3>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'1', '3'>,
+        int_to_string<13>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'1', '3', '3', '0'>,
+        int_to_string<1330>>::value, "");
 
 /*------------------------------------------------------------------------------
  * Printer
