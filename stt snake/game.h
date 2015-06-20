@@ -80,17 +80,6 @@ struct State
         nextBlock,
         world,
         typename random::next>;
-    
-    /**
-    */
-    using place_piece = typename State<
-        playerState,
-        score,
-        delay,
-        position,
-        block,
-        buffer_draw_grid<position, typename block::pieces, world>,
-        random>::place_initial_piece;
 };
 
 /**
@@ -105,6 +94,40 @@ using InitialState =
         typename initialBlockGenerator::value,
         InitialWorld,
         initialBlockGenerator>::place_initial_piece;
+
+/**
+    Place the current piece in the world and generate a new piece.
+*/
+template <typename s>
+using place_piece =
+    typename s:: template set_world<
+        buffer_draw_grid<
+            typename s::position,
+            typename s::block::pieces,
+            typename s::world>
+        >::place_initial_piece;
+
+/**
+    Hard drop the current piece.
+*/
+template <typename state>
+struct HardDrop {
+    template <typename s>
+    struct Drop {
+        using next = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
+        
+        struct con {
+            using type = typename Drop<next>::type;
+        };
+        
+        using type = branch_t<
+            playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
+            identity<s>,
+            con>;
+    };
+    
+    using type = typename Drop<state>::type;
+};
 
 /**
     Attempt to move the block without checking for any collisions.
@@ -180,22 +203,7 @@ struct step {
 */
 template <typename state>
 struct step<Input::Up, state> {
-    template <typename s>
-    struct Drop {
-        using next = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        
-        struct con {
-            using type = typename Drop<next>::type;
-        };
-        
-        using type = branch_t<
-            playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
-            identity<typename s::place_piece>,
-            con>;
-    };
-    
-    
-    using type = typename Drop<state>::type;
+    using type = place_piece<typename HardDrop<state>::type>;
 };
 
 /**
@@ -261,10 +269,28 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         death_buffer>;
 
     // Draw current block
-    using buffer = buffer_draw_grid<
+    using block_buffer = buffer_draw_grid<
         Position<1, 1>::add<position>,
         typename block::pieces,
         play_buffer>;
+
+    using ghostState = typename HardDrop<self>::type;
+
+    struct ToGhostPiece {
+        template <typename x>
+        using apply =
+            std::conditional<std::is_same<x, empty_pixel>::value,
+                empty_pixel,
+                Pixel<'~', default_gfx>>;
+    };
+
+    using ghostPiece = fmap_t<ToGhostPiece, typename ghostState::block::pieces>;
+
+    // Draw ghost
+    using buffer = buffer_draw_grid<
+        Position<1, 1>::add<typename ghostState::position>,
+        ghostPiece,
+        block_buffer>;
 
     static void Print(std::ostream& output)
     {

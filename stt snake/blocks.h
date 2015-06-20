@@ -31,6 +31,19 @@ struct Block {
     
     using rotateCw = Block<k, (r + 1) % o::size, o>;
     using rotateCcw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
+    
+    struct ToGhostPiece {
+        template <typename x>
+        using apply =
+            std::conditional<std::is_same<x, empty_pixel>::value,
+                empty_pixel,
+                Pixel<'~', default_gfx>>;
+    };
+    
+    /**
+        Get a ghost piece to show where a block will land.
+    */
+    using ghostPiece = fmap_t<ToGhostPiece, pieces>;
 };
 
 using x_cell = empty_pixel;
