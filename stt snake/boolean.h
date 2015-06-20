@@ -27,14 +27,14 @@ struct logical_or<true, right> : std::true_type { };
     Branch on `value` using call by need evaluation.
 */
 template <bool value, typename consequent, typename alternate>
-struct branch {
+struct Branch {
     using type = typename consequent::type;
 };
 
 template <typename consequent, typename alternate>
-struct branch<false, consequent, alternate> {
+struct Branch<false, consequent, alternate> {
     using type = typename alternate::type;
 };
 
 template <bool value, typename consequent, typename alternate>
-using branch_t = typename branch<value, consequent, alternate>::type;
+using branch = typename Branch<value, consequent, alternate>::type;

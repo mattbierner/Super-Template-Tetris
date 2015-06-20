@@ -154,7 +154,7 @@ struct GridPlaceRow {
                 grid>::type>;
     };
 
-    using type = branch_t<grid_is_in_bounds<origin, grid>::value,
+    using type = branch<grid_is_in_bounds<origin, grid>::value,
         IsInBounds,
         identity<grid>>;
 };

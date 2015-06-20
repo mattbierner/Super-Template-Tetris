@@ -59,7 +59,7 @@ struct State
     /**
         Is the block currently colliding with any pieces in the playfield?
     */
-    using isCollision =
+    using is_collision =
         playfield_is_colliding<
             position,
             typename block::pieces,
@@ -123,21 +123,13 @@ using place_piece =
 */
 template <typename state>
 struct HardDrop {
-    template <typename s>
-    struct Drop {
-        using next = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        
-        struct con {
-            using type = typename Drop<next>::type;
-        };
-        
-        using type = branch_t<
-            playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
-            identity<s>,
-            con>;
+    using next = typename state::template set_position<typename state::position::template add<Position<0, 1>>>;
+    
+    struct con {
+        using type = typename HardDrop<next>::type;
     };
     
-    using type = typename Drop<state>::type;
+    using type = branch<next::is_collision::value, identity<state>, con>;
 };
 
 /**
@@ -176,7 +168,7 @@ template <
     typename state>
 struct move {
     using next = typename move_block<input, state>::type;
-    using type = std::conditional_t<next::isCollision::value, state, next>;
+    using type = std::conditional_t<next::is_collision::value, state, next>;
 };
 
 template <typename state>
@@ -197,7 +189,7 @@ struct step {
     template <typename s>
     struct Down {
         using gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        using type = std::conditional_t<gnext::isCollision::value, s, gnext>;
+        using type = std::conditional_t<gnext::is_collision::value, s, gnext>;
     };
     
     template <typename s>

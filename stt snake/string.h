@@ -128,7 +128,7 @@ struct IntToString {
     };
 
     using type =
-        branch_t<(val < 10),
+        branch<(val < 10),
             identity<String<'0' + (val % 10)>>,
             Rec>;
 };
