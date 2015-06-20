@@ -3,17 +3,6 @@
 */
 #pragma once
 
-template <typename> struct PP;
-
-/**
-    Value equality check.
-*/
-template <typename T, T a>
-struct equals {
-    template <T b>
-    struct apply : std::integral_constant<bool, a == b> { };
-};
-
 /**
     Metafunction that returns `T`.
 */
@@ -46,9 +35,8 @@ struct mfunc {
     using apply = identity<f<args...>>;
 };
 
-
 /**
-    partial
+    Partially apply a template metafunction, returning a new metafunction.
 */
 template <typename f, typename... bound>
 struct partial {

@@ -1,12 +1,12 @@
-/**
-    Basic interface for a type that can be fmapped.
-*/
 #pragma once
 
+/**
+    Interface for a type that can be fmapped.
+*/
 template <typename f, typename x>
 struct Fmap {
     using type = call<f, x>;
 };
 
 template <typename f, typename x>
-using fmap_t = typename Fmap<f, x>::type;
+using f_map = typename Fmap<f, x>::type;

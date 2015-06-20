@@ -1,11 +1,11 @@
-/**
-    Interface for structures that can be folded.
-*/
 #pragma once
 
 #include "boolean.h"
 #include "utility.h"
 
+/**
+    Interface for structures that can be folded.
+*/
 template <typename f, typename z, typename s>
 struct Foldable {
     using type = call<f, z, s>;
@@ -14,8 +14,8 @@ struct Foldable {
 template <typename f, typename z, typename s>
 using fold = typename Foldable<f, z, s>::type;
 
-
 /**
+    Check if a predicate functor `f` holds true for every value in `s`.
 */
 template <typename f, typename s>
 struct Any {

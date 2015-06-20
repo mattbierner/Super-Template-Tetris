@@ -1,6 +1,7 @@
 #pragma once
 
 #include "block_generator.h"
+#include "buffer.h"
 #include "direction.h"
 #include "input.h"
 #include "grid.h"
@@ -8,7 +9,6 @@
 #include "random.h"
 #include "serialize.h"
 #include "playfield.h"
-#include "buffer.h"
 
 /**
     Seed for the random number generator.
@@ -243,8 +243,7 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
     // Draw outline
     using initial_buffer = buffer_draw_rect_outline<
         Position<0, 0>,
-        world::width + 2,
-        world::height + 2,
+        Size<world::width + 2, world::height + 2>,
         Pixel<'+', default_gfx>,
         empty_buffer<world::width + 2 + 10, world::height + 2>>;
     
@@ -253,14 +252,37 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         Position<world::width + 2 + 2, 2>,
         typename self::nextBlock::pieces,
         initial_buffer>;
-        
+    
+    // Draw Score
+    using score_buffer =
+        buffer_draw_centered_text<
+            Position<world::width + 2, 7>,
+            Orientation::Horizontal,
+            10,
+            std::conditional_t<playerState == PlayerState::Dead,
+                decltype("Game Over"_string),
+                String<>>,
+            default_gfx,
+        buffer_draw_centered_text<
+            Position<world::width + 2, 8>,
+            Orientation::Horizontal,
+            10,
+            decltype("Score"_string),
+            default_gfx,
+        buffer_draw_centered_text<
+            Position<world::width + 2, 10>,
+            Orientation::Horizontal,
+            10,
+            int_to_string<score>,
+            default_gfx,
+            next_block>>>;
+    
     // Draw death area
     using death_buffer = buffer_draw_rect<
         Position<1, 1>,
-        world::width,
-        deathZoneHeight,
+        Size<world::width, deathZoneHeight>,
         Pixel<'-', default_gfx>,
-        next_block>;
+        score_buffer>;
     
     // draw playfield
     using play_buffer = buffer_draw_grid<
@@ -284,7 +306,7 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
                 Pixel<'~', default_gfx>>;
     };
 
-    using ghostPiece = fmap_t<ToGhostPiece, typename ghostState::block::pieces>;
+    using ghostPiece = f_map<ToGhostPiece, typename ghostState::block::pieces>;
 
     // Draw ghost
     using buffer = buffer_draw_grid<
@@ -294,9 +316,6 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
 
     static void Print(std::ostream& output)
     {
-        output << "Score:" << score;
-        output << " -- " << (playerState == PlayerState::Dead ? " You Are Dead " : "");
-        output << "\n";
         Printer<buffer>::Print(output);
     }
 };

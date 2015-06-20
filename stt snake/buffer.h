@@ -58,29 +58,56 @@ struct BufferDrawText;
 
 template <typename origin, Orientation orientation, typename gfx, typename buffer, char... chars>
 struct BufferDrawText<origin, orientation, String<chars...>, gfx, buffer> {
-    using type = buffer_draw_grid<
-        origin,
-        create_list_grid<orientation, List<Pixel<chars, gfx>...>>,
-        buffer>;
+    using type =
+        buffer_draw_grid<
+            origin,
+            create_list_grid<orientation, List<Pixel<chars, gfx>...>>,
+            buffer>;
 };
 
 template <typename origin, Orientation orientation, typename str, typename gfx, typename buffer>
 using buffer_draw_text = typename BufferDrawText<origin, orientation, str, gfx, buffer>::type;
 
 /**
+    Draw centered text.
+*/
+template <typename origin, Orientation orientation, size_t max, typename str, typename gfx, typename buffer>
+struct BufferDrawCenteredText;
+
+template <typename origin, Orientation orientation, size_t max, typename gfx, typename buffer, char... chars>
+struct BufferDrawCenteredText<origin, orientation, max, String<chars...>, gfx, buffer> {
+    using str = typename StringTake<max, String<chars...>>::type;
+
+    using type =
+        buffer_draw_text<
+            typename origin::template add<create_offset<orientation, (max - str::size) / 2>>,
+            orientation,
+            str,
+            gfx,
+            buffer>;
+};
+
+template <typename origin, Orientation orientation, size_t max, typename str, typename gfx, typename buffer>
+using buffer_draw_centered_text = typename BufferDrawCenteredText<origin, orientation, max, str, gfx, buffer>::type;
+
+
+/**
     Draw a filled box.
 */
-template <typename origin, size_t width, size_t height, typename px, typename buffer>
+template <typename origin, typename size, typename px, typename buffer>
 using buffer_draw_rect =
-    buffer_draw_grid<origin, gen_grid<width, height, px>, buffer>;
+    buffer_draw_grid<
+        origin,
+        gen_grid<size::width, size::height, px>,
+        buffer>;
 
 
 /**
     Draw a empty box.
 */
-template <typename origin, size_t width, size_t height, typename px, typename buffer>
+template <typename origin, typename size, typename px, typename buffer>
 using buffer_draw_rect_outline =
-    buffer_draw_line<origin, Orientation::Horizontal, width, px,
-        buffer_draw_line<origin, Orientation::Vertical, height, px,
-            buffer_draw_line<typename origin::template add<Position<0, height - 1>>, Orientation::Horizontal, width, px,
-                buffer_draw_line<typename origin::template add<Position<width - 1, 0>>, Orientation::Vertical, height, px, buffer>>>>;
+    buffer_draw_line<origin, Orientation::Horizontal, size::width, px,
+        buffer_draw_line<origin, Orientation::Vertical, size::height, px,
+            buffer_draw_line<typename origin::template add<Position<0, size::height - 1>>, Orientation::Horizontal, size::width, px,
+                buffer_draw_line<typename origin::template add<Position<size::width - 1, 0>>, Orientation::Vertical, size::height, px, buffer>>>>;

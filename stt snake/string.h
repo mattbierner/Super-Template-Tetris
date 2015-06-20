@@ -11,9 +11,33 @@
 */
 template <char... chars>
 struct String {
+    static constexpr const size_t size = sizeof...(chars);
 
+    /**
+        Add additional characters to the end of the string.
+    */
     template <char... other>
     using append = String<chars..., other...>;
+};
+
+/**
+*/
+template <typename>
+struct StringCar;
+
+template <char x, char... xs>
+struct StringCar<String<x, xs...>> {
+    using type = String<x>;
+};
+
+/**
+*/
+template <typename>
+struct StringCdr;
+
+template <char x, char... xs>
+struct StringCdr<String<x, xs...>> {
+    using type = String<xs...>;
 };
 
 /**
@@ -31,6 +55,7 @@ template <typename s>
 using to_string = typename ToString<s>::type;
 
 /**
+    Combine two strings.
 */
 template <typename l, typename r>
 struct StringJoin;
@@ -45,9 +70,48 @@ using string_join = typename StringJoin<l, r>::type;
 
 /**
 */
+template <size_t n, typename s>
+struct StringTake {
+    using type =
+        string_join<
+            typename StringCar<s>::type,
+            typename StringTake<n - 1, typename StringCdr<s>::type>::type>;
+};
+
+template <typename s>
+struct StringTake<0, s> {
+    using type = String<>;
+};
+
+template <size_t n>
+struct StringTake<n, String<>> {
+    using type = String<>;
+};
+
+
+template <size_t n, typename s>
+using string_take = typename StringTake<n, s>::type;
+
+
+static_assert(
+    std::is_same<
+        String<>,
+        string_take<10, String<>>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'a'>,
+        string_take<10, String<'a'>>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'a', 'b'>,
+        string_take<2, String<'a', 'b', 'c', 'd'>>>::value, "");
+
+/**
+*/
 template <typename T, T... chars>
-constexpr auto operator""_string()
-{
+constexpr auto operator""_string() {
     return String<chars...>{};
 }
 

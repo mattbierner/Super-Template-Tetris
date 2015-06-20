@@ -53,7 +53,7 @@ struct CreateLineGrid {
     
     using type = Grid<
         std::conditional_t<orientation == Orientation::Vertical,
-            fmap_t<toCols, list>,
+            f_map<toCols, list>,
             List<list>>>;
 };
 
@@ -237,11 +237,11 @@ template <typename f, typename rows>
 struct Fmap<f, Grid<rows>> {
     struct inner {
         template <typename x>
-        using apply = identity<fmap_t<f, x>>;
+        using apply = identity<f_map<f, x>>;
     };
     
     using type = Grid<
-        fmap_t<
+        f_map<
             inner,
             rows>>;
 };

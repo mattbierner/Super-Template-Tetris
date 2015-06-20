@@ -43,7 +43,7 @@ struct Block {
     /**
         Get a ghost piece to show where a block will land.
     */
-    using ghostPiece = fmap_t<ToGhostPiece, pieces>;
+    using ghostPiece = f_map<ToGhostPiece, pieces>;
 };
 
 using x_cell = empty_pixel;
