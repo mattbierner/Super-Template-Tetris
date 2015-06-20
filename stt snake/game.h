@@ -111,7 +111,7 @@ using InitialState =
 */
 template <typename s>
 using place_piece =
-    typename s:: template set_world<
+    typename s::template set_world<
         buffer_draw_grid<
             typename s::position,
             typename s::block::pieces,
@@ -172,7 +172,7 @@ struct move {
 };
 
 template <typename state>
-struct move<Input::Up, state> {
+struct move<Input::Drop, state> {
     using type = place_piece<typename HardDrop<state>::type>;
 };
 
@@ -192,20 +192,21 @@ struct step {
         using type = std::conditional_t<gnext::is_collision::value, s, gnext>;
     };
     
+    /**
+        Check if the player has lost.
+    */
     template <typename s>
-    struct CheckGameOver {
-        using type =
-            std::conditional_t<
-                playfield_is_colliding<
-                    Position<0, 0>,
-                    gen_grid<s::world::width, deathZoneHeight, o_cell>,
-                    typename s::world>::value,
-                typename s::set_game_over,
-                s>;
-    };
+    using CheckGameOver =
+        std::conditional_t<
+            playfield_is_colliding<
+                Position<0, 0>,
+                gen_grid<s::world::width, deathZoneHeight, o_cell>,
+                typename s::world>::value,
+            typename s::set_game_over,
+            s>;
 
-    using type = typename CheckGameOver<
-        typename Down<typename move<input, state>::type>::type>::type;
+    using type = CheckGameOver<
+        typename Down<typename move<input, state>::type>::type>;
 };
 
 /**
@@ -242,12 +243,14 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
 {
     using self = State<playerState, score, delay, position, block, world, blockGenerator>;
     
+    static constexpr const size_t uiSize = 10;
+    
     // Draw outline
     using initial_buffer = buffer_draw_rect_outline<
         Position<0, 0>,
         Size<world::width + 2, world::height + 2>,
         Pixel<'+', default_gfx>,
-        empty_buffer<world::width + 2 + 10, world::height + 2>>;
+        empty_buffer<world::width + 2 + uiSize, world::height + 2>>;
     
     // Draw next block
     using next_block = buffer_draw_grid<
@@ -260,7 +263,7 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         buffer_draw_centered_text<
             Position<world::width + 2, 7>,
             Orientation::Horizontal,
-            10,
+            uiSize,
             std::conditional_t<playerState == PlayerState::Dead,
                 decltype("Game Over"_string),
                 String<>>,
@@ -268,13 +271,13 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         buffer_draw_centered_text<
             Position<world::width + 2, 8>,
             Orientation::Horizontal,
-            10,
+            uiSize,
             decltype("Score"_string),
             default_gfx,
         buffer_draw_centered_text<
             Position<world::width + 2, 10>,
             Orientation::Horizontal,
-            10,
+            uiSize,
             int_to_string<score>,
             default_gfx,
             next_block>>>;

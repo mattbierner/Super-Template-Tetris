@@ -2,14 +2,17 @@
 
 #include "input.h"
 
-#if defined(UP)
-constexpr const Input input = Input::Up;
-#elif defined(RIGHT)
-constexpr const Input input = Input::Right;
-#elif defined(DOWN)
-constexpr const Input input = Input::Down;
+static constexpr const Input input =
+#if defined(DROP)
+    Input::Drop;
 #elif defined(LEFT)
-constexpr const Input input = Input::Left;
+    Input::Left;
+#elif defined(RIGHT)
+    Input::Right;
+#elif defined(LROT)
+    Input::LRot;
+#elif defined(RROT)
+    Input::RRot;
 #else
-constexpr const Input input = Input::None;
+    Input::None;
 #endif
