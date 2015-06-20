@@ -2,7 +2,7 @@
 
 #include "color.h"
 #include "string.h"
-
+#include "serialize.h"
 /**
     Styling that tells how to render pixels.
 */
@@ -53,28 +53,46 @@ struct ToString<empty_pixel> {
 template <char val, typename gfx>
 struct ToString<Pixel<val, gfx>> {
     using type =
-        string_join<
-            typename string_join<
+        string_add<
+            typename string_add<
                 color_to_fg_code<gfx::foreground>,
                 color_to_bg_code<gfx::background>>::template append<val>,
             colorReset>;
 };
 
 /*------------------------------------------------------------------------------
-    Printer
+    Serialize
 */
 template <>
-struct Printer<empty_pixel> {
-    static void Print(std::ostream& output)
-    {
-        output << ' ';
-    }
+struct SerializeToString<empty_pixel> {
+    using type = decltype("empty_pixel"_string);
+};
+
+template <Color x>
+struct SerializeToString<SerializableValue<Color, x>> {
+    using type =
+        string_add<
+            decltype("static_cast<Color>("_string),
+            string_add<
+                int_to_string<static_cast<unsigned>(x)>,
+                String<')'>>>;
 };
 
 template <char val, typename gfx>
-struct Printer<Pixel<val, gfx>> {
-    static void Print(std::ostream& output)
-    {
-        Printer<to_string<Pixel<val, gfx>>>::Print(output);
-    }
+struct SerializeToString<Pixel<val, gfx>> {
+    using type =
+        serialize_class_to_string<
+            decltype("Pixel"_string),
+            SerializableValue<char, val>,
+            gfx>;
+};
+
+
+template <Color fg, Color bg>
+struct SerializeToString<Gfx<fg, bg>> {
+    using type =
+        serialize_class_to_string<
+            decltype("Gfx"_string),
+            SerializableValue<Color, fg>,
+            SerializableValue<Color, bg>>;
 };

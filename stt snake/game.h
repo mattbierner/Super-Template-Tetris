@@ -193,6 +193,13 @@ struct step {
     };
     
     /**
+    */
+    template <typename s>
+    struct Score {
+        
+    };
+    
+    /**
         Check if the player has lost.
     */
     template <typename s>
@@ -328,19 +335,14 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
 /*------------------------------------------------------------------------------
     Serialize
 */
-template <PlayerState state>
-struct Serialize<SerializableValue<PlayerState, state>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "PlayerState::";
-        switch (state)
-        {
-        case PlayerState::Alive: output << "Alive"; break;
-        case PlayerState::Dead: output << "Dead"; break;
-        }
-        return output;
-    }
+template <>
+struct SerializeToString<SerializableValue<PlayerState, PlayerState::Alive>> {
+    using type = decltype("PlayerState::Alive"_string);
+};
+
+template <>
+struct SerializeToString<SerializableValue<PlayerState, PlayerState::Dead>> {
+    using type = decltype("PlayerState::Dead"_string);
 };
 
 template <
@@ -351,18 +353,13 @@ template <
     typename block,
     typename world,
     typename blockGenerator>
-struct Serialize<State<playerState, score, delay, position, block, world, blockGenerator>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "State<";
-        Join<',',
+struct SerializeToString<State<playerState, score, delay, position, block, world, blockGenerator>> {
+    using type =
+        serialize_class_to_string<decltype("State"_string),
             SerializableValue<PlayerState, playerState>,
             SerializableValue<unsigned, score>,
             SerializableValue<size_t, delay>,
             block,
             world,
-            blockGenerator>::Write(output);
-        return output << ">";
-    }
+            blockGenerator>;
 };

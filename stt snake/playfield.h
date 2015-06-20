@@ -7,7 +7,7 @@
 /**
     Default width of the field.
 */
-constexpr const size_t worldWidth = 2;
+constexpr const size_t worldWidth = 4;
 
 /**
     Default height of the field.
@@ -31,6 +31,7 @@ template <typename x>
 using is_empty = std::is_same<x, empty_pixel>;
 
 /**
+    Is a given position is empty?
 */
 template <typename pos, typename grid>
 struct playfield_is_empty {
@@ -44,7 +45,7 @@ struct playfield_is_empty {
 };
 
 /**
-    Get a list of all valid positions.
+    Get a list of all non empty positions.
 */
 template <typename grid, typename offset = Position<0, 0>>
 struct PlayfieldGetPositionsReducer {
@@ -62,7 +63,6 @@ using playfield_get_positions =
         PlayfieldGetPositionsReducer<grid, offset>,
         List<>,
         grid_zip_positions<grid>>;
-
 
 /**
 */

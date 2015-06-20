@@ -5,12 +5,11 @@
 /**
     Basic specilizable interface for a type that can be printed for display.
 */
-template <typename>
+template <typename, typename = void>
 struct Printer;
 
 template <typename T, T x>
-struct Printer<std::integral_constant<T, x>>
-{
+struct Printer<std::integral_constant<T, x>> {
     static void Print(std::ostream& output)
     {
         output << x;

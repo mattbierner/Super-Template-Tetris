@@ -197,12 +197,8 @@ struct Printer<List<x, xs...>>
     Serialize
 */
 template <typename... elements>
-struct Serialize<List<elements...>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "List<";
-        Join<',', elements...>::Write(output);
-        return output << ">";
-    }
+struct SerializeToString<List<elements...>> {
+    using type =
+        serialize_class_to_string<decltype("List"_string),
+            elements...>;
 };

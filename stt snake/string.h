@@ -21,6 +21,15 @@ struct String {
 };
 
 /**
+    User defined literal to create a string from a string literal.
+*/
+template <typename T, T... chars>
+constexpr auto operator""_string() {
+    return String<chars...>{};
+};
+
+/**
+    Get the head of a string.
 */
 template <typename>
 struct StringCar;
@@ -31,6 +40,7 @@ struct StringCar<String<x, xs...>> {
 };
 
 /**
+    Get the rest of a string
 */
 template <typename>
 struct StringCdr;
@@ -58,22 +68,23 @@ using to_string = typename ToString<s>::type;
     Combine two strings.
 */
 template <typename l, typename r>
-struct StringJoin;
+struct StringAdd;
 
 template <typename l, char... rs>
-struct StringJoin<l, String<rs...>> {
+struct StringAdd<l, String<rs...>> {
     using type = typename l::template append<rs...>;
 };
 
 template <typename l, typename r>
-using string_join = typename StringJoin<l, r>::type;
+using string_add = typename StringAdd<to_string<l>, to_string<r>>::type;
 
 /**
+    Trim a string to be size `n`.
 */
 template <size_t n, typename s>
 struct StringTake {
     using type =
-        string_join<
+        string_add<
             typename StringCar<s>::type,
             typename StringTake<n - 1, typename StringCdr<s>::type>::type>;
 };
@@ -88,10 +99,8 @@ struct StringTake<n, String<>> {
     using type = String<>;
 };
 
-
 template <size_t n, typename s>
 using string_take = typename StringTake<n, s>::type;
-
 
 static_assert(
     std::is_same<
@@ -109,11 +118,33 @@ static_assert(
         string_take<2, String<'a', 'b', 'c', 'd'>>>::value, "");
 
 /**
+    Combine a list of elements, seperating neighboring elements using `joiner`.
 */
-template <typename T, T... chars>
-constexpr auto operator""_string() {
-    return String<chars...>{};
-}
+template <typename joiner, typename...>
+struct StringJoin;
+
+template <typename joiner, typename first, typename second, typename... rest>
+struct StringJoin<joiner, first, second, rest...> {
+    using type =
+        string_add<
+            first,
+            string_add<
+                joiner,
+                typename StringJoin<joiner, second, rest...>::type>>;
+};
+
+template <typename joiner, typename first>
+struct StringJoin<joiner, first> {
+    using type = to_string<first>;
+};
+
+template <typename joiner>
+struct StringJoin<joiner> {
+    using type = String<>;
+};
+
+template <typename joiner, typename... elements>
+using string_join = typename StringJoin<joiner, elements...>::type;
 
 /**
     Convert an integer value into a string.
@@ -122,7 +153,7 @@ template <size_t val>
 struct IntToString {
     struct Rec {
         using type =
-            string_join<
+            string_add<
                 typename IntToString<val / 10>::type,
                 String<'0' + (val % 10)>>;
     };
@@ -160,16 +191,24 @@ static_assert(
  * Printer
  */
 template <>
-struct Printer<String<>>
-{
+struct Printer<String<>> {
     static std::ostream& Print(std::ostream& output) { return output; }
 };
 
 template <char x, char... xs>
-struct Printer<String<x, xs...>>
-{
+struct Printer<String<x, xs...>> {
     static std::ostream& Print(std::ostream& output)
     {
         return Printer<String<xs...>>::Print(output << x);
+    }
+};
+
+/*------------------------------------------------------------------------------
+    Printer - General specilaization for any type that implements `ToString`
+*/
+template <typename s>
+struct Printer<s> {
+    static void Print(std::ostream& output) {
+        Printer<to_string<s>>::Print(output);
     }
 };

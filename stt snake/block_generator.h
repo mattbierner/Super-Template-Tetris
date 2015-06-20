@@ -1,8 +1,9 @@
 #pragma once
 
 #include "blocks.h"
-#include "printer.h"
 #include "random.h"
+#include "string.h"
+#include "serialize.h"
 
 template <typename rand>
 struct BlockGenerator {
@@ -10,17 +11,17 @@ struct BlockGenerator {
     using value = get_t<rand::value, blocks>;
 };
 
-using initialBlockGenerator = BlockGenerator<
-    Random<blocks::size>>;
+using initialBlockGenerator =
+    BlockGenerator<
+        Random<blocks::size>>;
 
 /*------------------------------------------------------------------------------
-    Printer
+    SerializeToString
 */
 template <typename rand>
-struct Printer<BlockGenerator<rand>>
+struct SerializeToString<BlockGenerator<rand>>
 {
-    static void Print(std::ostream& output)
-    {
-        Printer<rand>::Print(output);
-    }
+    using type =
+        serialize_class_to_string<decltype("BlockGenerator"_string),
+            rand>;
 };

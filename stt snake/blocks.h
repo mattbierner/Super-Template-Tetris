@@ -3,11 +3,12 @@
 #include "list.h"
 #include "grid.h"
 #include "pixel.h"
+#include "serialize.h"
 
 /**
     Type of block.
 */
-enum class BlockType
+enum class BlockType : unsigned
 {
     None,
     I,
@@ -184,3 +185,26 @@ using ZBlock = Block<BlockType::Z, 0,
     List of all blocks.
 */
 using blocks = List<IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock>;
+
+
+/*------------------------------------------------------------------------------
+    SerializeToString
+*/
+template <BlockType x>
+struct SerializeToString<SerializableValue<BlockType, x>> {
+    using type =
+        string_add<
+            decltype("static_cast<BlockType>("_string),
+            string_add<
+                int_to_string<static_cast<unsigned>(x)>,
+                String<')'>>>;
+};
+
+template <BlockType k, size_t r, typename o>
+struct SerializeToString<Block<k, r, o>> {
+    using type =
+        serialize_class_to_string<decltype("Block"_string),
+            SerializableValue<BlockType, k>,
+            SerializableValue<size_t, r>,
+            o>;
+};

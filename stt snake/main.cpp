@@ -17,14 +17,15 @@
 template <typename state>
 void serialize_game()
 {
-    std::ofstream s;
+   /** std::ofstream s;
     s.open("current_game.h");
     s << "#import \"snake.h\"\n";
-    
-    s << "using state = ";
-    Serialize<state>::Write(s);
-    s << ";";
-    s.close();
+    return Serialize<typename SerializeToString<s>::type>::Write(output);
+
+    s << "using state = ";*/
+    Serialize<serialize_to_string<car<state>>>::Write(std::cout);
+/*    s << ";";
+    s.close();*/
 }
 
 template <typename s, Input... inputs>
@@ -54,13 +55,14 @@ int main(int argc, const char* argv[])
 #endif
 
     Printer<game>::Print(std::cout);
-    
-    serialize_game<game>();
 */
+    using game = typename Play<InitialState,
+        Input::LRot, Input::Left, Input::Left, Input::Drop,
+        Input::LRot, Input::Right, Input::Right, Input::Drop>::type;
 
-    Printer<typename Play<InitialState,
-        Input::LRot, Input::Left, Input::Left, Input::Left, Input::Left, Input::Left, Input::Drop,
-        Input::Left, Input::Left, Input::Left, Input::Drop, Input::Right>::type>::Print(std::cout);
+    serialize_game<game>();
+
+    Printer<game>::Print(std::cout);
 
     return 0;
 }

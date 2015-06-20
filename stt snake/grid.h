@@ -10,8 +10,6 @@
 
 /**
     Two dimensional grid of values.
-    
-    Stores a list of column lists that store cells.
 */
 template <typename r>
 struct Grid {
@@ -21,9 +19,10 @@ struct Grid {
     static constexpr const size_t height = rows::size;
     
     template <typename pos>
-    using nextPosition = Position<
-        (pos::x + 1) % width,
-        pos::x + 1 == width ? pos::y + 1 : pos::y>;
+    using nextPosition =
+        Position<
+            (pos::x + 1) % width,
+            pos::x + 1 == width ? pos::y + 1 : pos::y>;
 };
 
 /**
@@ -33,32 +32,28 @@ template <size_t width, size_t height, typename value>
 using gen_grid = Grid<gen_t<height, gen_t<width, value>>>;
 
 /**
-    Create a single line grid.
-*/
-template <Orientation orientation, size_t len, typename cell>
-using create_line_grid =
-    std::conditional_t<orientation == Orientation::Vertical,
-        gen_grid<1, len, cell>,
-        gen_grid<len, 1, cell>>;
-
-/**
     Create a single line grid from a list.
 */
-template <Orientation orientation, typename list>
-struct CreateLineGrid {
-    struct toCols {
-        template <typename x>
-        using apply = identity<List<x>>;
-    };
-    
-    using type = Grid<
-        std::conditional_t<orientation == Orientation::Vertical,
-            f_map<toCols, list>,
-            List<list>>>;
+struct ToCols {
+    template <typename x>
+    using apply = identity<List<x>>;
 };
 
 template <Orientation orientation, typename list>
-using create_list_grid = typename CreateLineGrid<orientation, list>::type;
+using create_list_grid =
+    Grid<
+        std::conditional_t<orientation == Orientation::Vertical,
+            f_map<ToCols, list>,
+            List<list>>>;
+
+/**
+    Create a single line grid.
+*/
+template <Orientation orientation, size_t size, typename cell>
+using create_line_grid =
+    create_list_grid<
+        orientation,
+        gen_t<size, cell>>;
 
 /**
     Get the element at `pos(x, y)` in a grid.
@@ -91,26 +86,23 @@ using grid_try_put = grid_put<
 */
 template <typename g>
 struct GridZipPositions {
-    struct inner {
-        template <typename p, typename c>
-        struct apply {
-            using pos = car<p>;
-            using grid = caar<p>;
-            using nextPos = typename grid::template nextPosition<pos>;
-            using type = List<
-                nextPos,
-                grid_put<pos, List<pos, c>, grid>>;
-        };
+    template <typename p, typename c>
+    struct apply {
+        using pos = car<p>;
+        using grid = caar<p>;
+        using nextPos = typename grid::template nextPosition<pos>;
+        using type = List<
+            nextPos,
+            grid_put<pos, List<pos, c>, grid>>;
     };
-    
-    using type = caar<fold<
-        inner,
-        List<Position<0, 0>, g>,
-        g>>;
 };
 
 template <typename g>
-using grid_zip_positions = typename GridZipPositions<g>::type;
+using grid_zip_positions =
+    caar<fold<
+        GridZipPositions<g>,
+        List<Position<0, 0>, g>,
+        g>>;
 
 /**
     Is `pos` within the width of the grid?
@@ -224,10 +216,7 @@ struct Foldable<f, z, Grid<rows>> {
         using apply = identity<fold<f, p, c>>;
     };
 
-    using type = fold<
-        inner,
-        z,
-        rows>;
+    using type = fold<inner, z, rows>;
 };
 
 /*------------------------------------------------------------------------------
@@ -241,21 +230,15 @@ struct Fmap<f, Grid<rows>> {
     };
     
     using type = Grid<
-        f_map<
-            inner,
-            rows>>;
+        f_map<inner, rows>>;
 };
 
 /*------------------------------------------------------------------------------
     Serialize
 */
 template <typename rows>
-struct Serialize<Grid<rows>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "grid<";
-        Serialize<rows>::Write(output);
-        return output << ">";
-    }
+struct SerializeToString<Grid<rows>> {
+    using type =
+        serialize_class_to_string<decltype("Grid"_string),
+            rows>;
 };

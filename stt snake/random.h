@@ -2,7 +2,7 @@
 
 #include <limits>
 #include <stdint.h>
-#include "printer.h"
+#include "string.h"
 
 template <typename T, T s, T max = std::numeric_limits<T>::max(), T a = 1103515245, T c = 12345>
 struct LinearGenerator
@@ -25,44 +25,33 @@ struct Random
     Serialize
 */
 template <typename T, T s, T max, T a, T c>
-struct Serialize<LinearGenerator<T, s, max, a, c>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "LinearGenerator<";
-        Serialize<T>::Write(output);
-        return output << "," << s << "," << max << "," << a << "," << c << ">";
-    }
+struct SerializeToString<LinearGenerator<T, s, max, a, c>> {
+    using type =
+        serialize_class_to_string<decltype("LinearGenerator"_string),
+            T,
+            SerializableValue<T, s>,
+            SerializableValue<T, max>,
+            SerializableValue<T, a>,
+            SerializableValue<T, c>>;
 };
 
 template <unsigned max, typename rand>
-struct Serialize<Random<max, rand>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "Random<";
-        Serialize<rand>::Write(output);
-        return output << "," << "," << max << ">";
-    }
+struct SerializeToString<Random<max, rand>> {
+    using type =
+        serialize_class_to_string<decltype("Random"_string),
+            SerializableValue<unsigned, max>,
+            rand>;
 };
 
 /*------------------------------------------------------------------------------
-    Printer
+    ToString
 */
 template <typename T, T s, T max, T a, T c>
-struct Printer<LinearGenerator<T, s, max, a, c>>
-{
-    static void Print(std::ostream& output)
-    {
-        output << LinearGenerator<T, s, max, a, c>::value;
-    }
+struct ToString<LinearGenerator<T, s, max, a, c>> {
+    using type = int_to_string<LinearGenerator<T, s, max, a, c>::value>;
 };
 
 template <unsigned max, typename rand>
-struct Printer<Random<max, rand>>
-{
-    static void Print(std::ostream& output)
-    {
-        output << Random<max, rand>::value;
-    }
+struct ToString<Random<max, rand>> {
+    using type = int_to_string<Random<max, rand>::value>;
 };
