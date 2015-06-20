@@ -38,7 +38,6 @@
 		894C66911A6A135A00F4AF80 /* buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
 		894C66931A6A1B8F00F4AF80 /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
 		894C66941A6A1F9A00F4AF80 /* input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
-		894C66951A6A213500F4AF80 /* direction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = direction.h; sourceTree = "<group>"; };
 		894C66961A6A259C00F4AF80 /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
 		894C66971A6A297700F4AF80 /* playfield.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfield.h; sourceTree = "<group>"; };
 		894C66981A6AF97D00F4AF80 /* boolean.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boolean.h; sourceTree = "<group>"; };
@@ -83,7 +82,6 @@
 				894C66861A6A0CCD00F4AF80 /* main.cpp */,
 				89C67C201B33B99100FB41AE /* block_generator.h */,
 				894C66931A6A1B8F00F4AF80 /* game.h */,
-				894C66951A6A213500F4AF80 /* direction.h */,
 				894C66941A6A1F9A00F4AF80 /* input.h */,
 				894C66911A6A135A00F4AF80 /* buffer.h */,
 				894C668D1A6A0CF800F4AF80 /* list.h */,
@@ -209,6 +207,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-ftemplate-depth-5000",
+					"-std=c++1z",
 					"-ftemplate-backtrace-limit=0",
 				);
 				SDKROOT = macosx;
@@ -248,6 +247,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-ftemplate-depth-5000",
+					"-std=c++1z",
 					"-ftemplate-backtrace-limit=0",
 				);
 				SDKROOT = macosx;

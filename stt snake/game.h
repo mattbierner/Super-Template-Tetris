@@ -2,7 +2,6 @@
 
 #include "block_generator.h"
 #include "buffer.h"
-#include "direction.h"
 #include "input.h"
 #include "grid.h"
 #include "printer.h"

@@ -71,18 +71,13 @@ struct SerializeToString<empty_pixel> {
 template <Color x>
 struct SerializeToString<SerializableValue<Color, x>> {
     using type =
-        string_add<
-            decltype("static_cast<Color>("_string),
-            string_add<
-                int_to_string<static_cast<unsigned>(x)>,
-                String<')'>>>;
+        serialize_enum_to_string<decltype("Color"_string), Color, x>;
 };
 
 template <char val, typename gfx>
 struct SerializeToString<Pixel<val, gfx>> {
     using type =
-        serialize_class_to_string<
-            decltype("Pixel"_string),
+        serialize_class_to_string<decltype("Pixel"_string),
             SerializableValue<char, val>,
             gfx>;
 };
@@ -91,8 +86,7 @@ struct SerializeToString<Pixel<val, gfx>> {
 template <Color fg, Color bg>
 struct SerializeToString<Gfx<fg, bg>> {
     using type =
-        serialize_class_to_string<
-            decltype("Gfx"_string),
+        serialize_class_to_string<decltype("Gfx"_string),
             SerializableValue<Color, fg>,
             SerializableValue<Color, bg>>;
 };

@@ -2,7 +2,6 @@
 
 #include "list.h"
 #include "functor.h"
-#include "direction.h"
 #include "printer.h"
 #include "position.h"
 #include <type_traits>
@@ -26,7 +25,7 @@ struct Grid {
 };
 
 /**
-    Generate an width x height grid of `value`.
+    Generate an `width` by `height` grid of `value`.
 */
 template <size_t width, size_t height, typename value>
 using gen_grid = Grid<gen_t<height, gen_t<width, value>>>;

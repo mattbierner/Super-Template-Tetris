@@ -4,33 +4,12 @@
 #include "string.h"
 
 /**
-    Interface for an object that can be serialized.
-*/
-template <typename, typename = void>
-struct Serialize;
-
-template <char x, char... xs>
-struct Serialize<String<x, xs...>> {
-    static std::ostream& Write(std::ostream& output)
-    {
-        return Serialize<String<xs...>>::Write(output << x);
-    }
-};
-
-template <>
-struct Serialize<String<>> {
-    static std::ostream& Write(std::ostream& output)
-    {
-        return output;
-    }
-};
-
-/**
     Interface for an object that can be serialized to a string.
+    
+    Objects are serialized to C++.
 */
 template <typename>
 struct SerializeToString;
-
 
 template <typename x>
 using serialize_to_string = typename SerializeToString<x>::type;
@@ -41,40 +20,8 @@ struct SerializeToString<String<chars...>> {
 };
 
 /**
-    Serializes a list of elements, seperating neighboring elements using `joiner`.
+    Serialize templated class `name` with `elements` template paramters.
 */
-template <char joiner, typename... list>
-struct Join;
-
-template <char joiner, typename first, typename second, typename... rest>
-struct Join<joiner, first, second, rest...>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        Serialize<first>::Write(output);
-        output << joiner;
-        return Join<joiner, second, rest...>::Write(output);
-    }
-};
-
-template <char joiner, typename first>
-struct Join<joiner, first>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        return Serialize<first>::Write(output);
-    }
-};
-
-template <char joiner>
-struct Join<joiner>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        return output;
-    }
-};
-
 template <typename name, typename... elements>
 using serialize_class_to_string =
     string_add<
@@ -84,6 +31,21 @@ using serialize_class_to_string =
             string_add<
                 string_join<String<','>, serialize_to_string<elements>...>,
                 String<'>'>>>>;
+
+/**
+    Serialize enum class `name` of type `t` and value `x`.
+*/
+template <typename name, typename t, t x>
+using serialize_enum_to_string =
+    string_add<
+        string_add<
+            decltype("static_cast<"_string),
+            string_add<
+                name,
+                String<'>', '('>>>,
+        string_add<
+            int_to_string<static_cast<unsigned>(x)>,
+            String<')'>>>;
 
 /*------------------------------------------------------------------------------
     Basic Type Serialization

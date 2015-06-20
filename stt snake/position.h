@@ -39,7 +39,6 @@ struct Size {
 };
 
 
-
 /*------------------------------------------------------------------------------
     Printer
 */
@@ -55,10 +54,9 @@ struct Printer<Position<x, y>> {
     Serialize
 */
 template <int x, int y>
-struct Serialize<Position<x, y>> {
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "Position<" << x << "," << y << ">";
-        return output;
-    }
+struct SerializeToString<Position<x, y>> {
+    using type =
+        serialize_class_to_string<decltype("Position"_string),
+            SerializableValue<int, x>,
+            SerializableValue<int, y>>;
 };

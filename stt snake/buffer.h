@@ -1,6 +1,5 @@
 #pragma once
 
-#include "direction.h"
 #include "grid.h"
 #include "pixel.h"
 #include "string.h"
