@@ -16,6 +16,20 @@ struct String {
 };
 
 /**
+    Interface for a type that can be converted to a string
+ */
+template <typename>
+struct ToString;
+
+template <char... chars>
+struct ToString<String<chars...>> {
+    using type = String<chars...>;
+};
+
+template <typename s>
+using to_string = typename ToString<s>::type;
+
+/**
 */
 template <typename l, typename r>
 struct StringJoin;
@@ -35,6 +49,7 @@ constexpr auto operator""_string()
 {
     return String<chars...>{};
 }
+
 
 /*------------------------------------------------------------------------------
  * Printer

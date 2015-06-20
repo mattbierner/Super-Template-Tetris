@@ -23,6 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8906D2661B34DD63001A2CA3 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
 		89397A761B27F9A600160727 /* position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = position.h; sourceTree = "<group>"; };
 		89397A771B27FDF700160727 /* utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		89397A781B27FF2100160727 /* foldable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = foldable.h; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 				89397A791B2814A900160727 /* grid.h */,
 				89397A7A1B28172400160727 /* pixel.h */,
 				89397A7B1B291ECD00160727 /* blocks.h */,
+				8906D2661B34DD63001A2CA3 /* color.h */,
 			);
 			name = tetris;
 			path = "stt snake";

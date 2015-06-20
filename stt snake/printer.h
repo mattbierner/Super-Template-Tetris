@@ -1,10 +1,10 @@
-/**
-    Basic specilizable interface for a type that can be printed for display.
-*/
 #pragma once
 
 #include <utility>
 
+/**
+    Basic specilizable interface for a type that can be printed for display.
+*/
 template <typename>
 struct Printer;
 

@@ -17,6 +17,13 @@ template <unsigned max>
 using InitialRandom = LinearGenerator<uint32_t, 12345>;
 
 /**
+    Number of game steps to delay before a block is automatically placed.
+    
+    Movement resets the delay.
+*/
+static const size_t standardDelay = 1;
+
+/**
     General state of the player
 */
 enum class PlayerState : unsigned
@@ -31,6 +38,7 @@ enum class PlayerState : unsigned
 template <
     PlayerState currentPlayerState,
     unsigned currentScore,
+    size_t delay,
     typename currentPosition,
     typename currentBlock,
     typename currentWorld,
@@ -49,22 +57,23 @@ struct State
     using nextBlock = typename currentBlockGenerator::next::value;
 
     template <typename newPos>
-    using set_position = State<playerState, score, newPos, block, world, random>;
+    using set_position = State<playerState, score, delay, newPos, block, world, random>;
     
     template <typename newWorld>
-    using set_world = State<playerState, score, position, block, newWorld, random>;
+    using set_world = State<playerState, score, delay, position, block, newWorld, random>;
     
     template <typename newRandom>
-    using set_random = State<playerState, score, position, block, world, newRandom>;
+    using set_random = State<playerState, score, delay, position, block, world, newRandom>;
     
     template <typename newBlock>
-    using set_block = State<playerState, score, position, newBlock, world, random>;
+    using set_block = State<playerState, score, delay, position, newBlock, world, random>;
     
     /**
     */
     using place_initial_piece = State<
         playerState,
         score,
+        delay,
         Position<
             (currentWorld::width / 2) - (nextBlock::pieces::width) / 2,
             0>,
@@ -77,6 +86,7 @@ struct State
     using place_piece = typename State<
         playerState,
         score,
+        delay,
         position,
         block,
         buffer_draw_grid<position, typename block::pieces, world>,
@@ -90,10 +100,47 @@ using InitialState =
     typename State<
         PlayerState::Alive,
         0,
+        0,
         Position<0, 0>,
         typename initialBlockGenerator::value,
         InitialWorld,
         initialBlockGenerator>::place_initial_piece;
+
+/**
+    Attempt to move the block without checking for any collisions.
+*/
+template <Input input, typename state>
+struct move_block;
+
+template <typename state>
+struct move_block<Input::Left, state> {
+    using type = typename state::template set_position<typename state::position::template add<Position<-1, 0>>>;
+};
+
+template <typename state>
+struct move_block<Input::Right, state> {
+    using type = typename state::template set_position<typename state::position::template add<Position<1, 0>>>;
+};
+
+/**
+    Move the block in response to player input.
+    
+    This happens before gravity is applied.
+*/
+template <
+    Input input,
+    typename state>
+struct move {
+    using next = typename move_block<input, state>::type;
+    
+    using type = std::conditional_t<
+        playfield_is_colliding<
+            typename next::position,
+            typename next::block::pieces,
+            typename next::world>::value,
+        state,
+        next>;
+};
 
 /**
     Progress the game by one step by consuming one input.
@@ -102,20 +149,6 @@ template <
     Input input,
     typename state>
 struct step {
-   using type = typename state::template set_position<typename state::position::template add<Position<0, 1>>>;
-};
-
-
-
-/**
-    Move Left.
-    
-    Also drops down by one.
-*/
-template <typename state>
-struct step<Input::Left, state> {
-    using next = typename state::template set_position<typename state::position::template add<Position<-1, 0>>>;
-
     /**
         Apply gravity to the current piece but keep it alive if it collides.
     */
@@ -129,10 +162,7 @@ struct step<Input::Left, state> {
             gnext>;
     };
 
-    using type = branch_t<
-        playfield_is_colliding<typename next::position, typename next::block::pieces, typename next::world>::value,
-        Thunk<Down, state>,
-        Thunk<Down, next>>;
+    using type = typename Down<typename move<input, state>::type>::type;
 };
 
 /**
@@ -164,12 +194,13 @@ struct step<Input::Up, state> {
 template <
     Input input,
     unsigned score,
+    size_t delay,
     typename position,
     typename block,
     typename world,
     typename blockGenerator>
-struct step<input, State<PlayerState::Dead, score, position, block, world, blockGenerator>> {
-    using type = State<PlayerState::Dead, score, position, block, world, blockGenerator>;
+struct step<input, State<PlayerState::Dead, score, delay, position, block, world, blockGenerator>> {
+    using type = State<PlayerState::Dead, score, delay, position, block, world, blockGenerator>;
 };
 
 template <Input input, typename state>
@@ -182,13 +213,14 @@ using step_t = typename step<input, state>::type;
 template <
     PlayerState playerState,
     unsigned score,
+    size_t delay,
     typename position,
     typename block,
     typename world,
     typename blockGenerator>
-struct Printer<State<playerState, score, position, block, world, blockGenerator>>
+struct Printer<State<playerState, score, delay, position, block, world, blockGenerator>>
 {
-    using self = State<playerState, score, position, block, world, blockGenerator>;
+    using self = State<playerState, score, delay, position, block, world, blockGenerator>;
     
     // Draw outline
     using initial_buffer = buffer_draw_rect_outline<
@@ -254,11 +286,12 @@ struct Serialize<SerializableValue<PlayerState, state>>
 template <
     PlayerState playerState,
     unsigned score,
+    size_t delay,
     typename position,
     typename block,
     typename world,
     typename blockGenerator>
-struct Serialize<State<playerState, score, position, block, world, blockGenerator>>
+struct Serialize<State<playerState, score, delay, position, block, world, blockGenerator>>
 {
     static std::ostream& Write(std::ostream& output)
     {
@@ -266,6 +299,7 @@ struct Serialize<State<playerState, score, position, block, world, blockGenerato
         Join<',',
             SerializableValue<PlayerState, playerState>,
             SerializableValue<unsigned, score>,
+            SerializableValue<size_t, delay>,
             block,
             world,
             blockGenerator>::Write(output);
