@@ -12,7 +12,7 @@
 #include "game.h"
  
 /**
-    Save the output state
+    Save the game state.
 */
 template <typename state>
 void serialize_game()
@@ -21,10 +21,11 @@ void serialize_game()
     s.open("current_game.h");
     s << "#import \"game.h\"\n";
     s << "using state = ";
-    Printer<serialize_to_string<car<state>>>::Print(std::cout);
+    Printer<serialize_to_string<state>>::Print(s);
     s << ";";
     s.close();
 }
+
 
 template <typename s, Input... inputs>
 struct Play {
@@ -41,10 +42,10 @@ struct Play<s, x, xs...> {
 */
 int main(int argc, const char* argv[])
 {
-/*#include "current_game.h"
+#include "current_game.h"
 
 #include "get_input.h"
-    
+/*
     // on first turn, don't consume any input but print the game world.
 #if defined(FIRSTTURN)
     using game = state;
@@ -58,7 +59,7 @@ int main(int argc, const char* argv[])
         Input::LRot, Input::Left, Input::Left, Input::Drop,
         Input::LRot, Input::Right, Input::Right, Input::Drop>::type;
 
-    serialize_game<game>();
+    serialize_game<car<game>>();
 
     Printer<game>::Print(std::cout);
 

@@ -24,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		8906D2661B34DD63001A2CA3 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
+		892AE3B01B35F2AD00B12DD6 /* current_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = current_game.h; sourceTree = "<group>"; };
 		89397A761B27F9A600160727 /* position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = position.h; sourceTree = "<group>"; };
 		89397A771B27FDF700160727 /* utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		89397A781B27FF2100160727 /* foldable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = foldable.h; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		89C67C201B33B99100FB41AE /* block_generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = block_generator.h; sourceTree = "<group>"; };
 		89C67C211B33D4D000FB41AE /* string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string.h; sourceTree = "<group>"; };
 		89CECF591A6DFDA200138F41 /* serialize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = serialize.h; sourceTree = "<group>"; };
-		89CECF5B1A6E0C2200138F41 /* current_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = current_game.h; sourceTree = "<group>"; };
 		89CECF5C1A6E0F5F00138F41 /* get_input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = get_input.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,6 +78,7 @@
 		894C66851A6A0CCD00F4AF80 /* tetris */ = {
 			isa = PBXGroup;
 			children = (
+				892AE3B01B35F2AD00B12DD6 /* current_game.h */,
 				89C67C211B33D4D000FB41AE /* string.h */,
 				894C66861A6A0CCD00F4AF80 /* main.cpp */,
 				89C67C201B33B99100FB41AE /* block_generator.h */,
@@ -91,7 +92,6 @@
 				894C66971A6A297700F4AF80 /* playfield.h */,
 				894C66981A6AF97D00F4AF80 /* boolean.h */,
 				89CECF591A6DFDA200138F41 /* serialize.h */,
-				89CECF5B1A6E0C2200138F41 /* current_game.h */,
 				89CECF5C1A6E0F5F00138F41 /* get_input.h */,
 				89397A761B27F9A600160727 /* position.h */,
 				89397A771B27FDF700160727 /* utility.h */,

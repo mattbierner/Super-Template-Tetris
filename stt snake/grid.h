@@ -33,16 +33,11 @@ using gen_grid = Grid<gen_t<height, gen_t<width, value>>>;
 /**
     Create a single line grid from a list.
 */
-struct ToCols {
-    template <typename x>
-    using apply = identity<List<x>>;
-};
-
 template <Orientation orientation, typename list>
 using create_list_grid =
     Grid<
         std::conditional_t<orientation == Orientation::Vertical,
-            f_map<ToCols, list>,
+            f_map<mfunc<List>, list>,
             List<list>>>;
 
 /**

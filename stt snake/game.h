@@ -358,6 +358,7 @@ struct SerializeToString<State<playerState, score, delay, position, block, world
             SerializableValue<PlayerState, playerState>,
             SerializableValue<unsigned, score>,
             SerializableValue<size_t, delay>,
+            position,
             block,
             world,
             blockGenerator>;
