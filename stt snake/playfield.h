@@ -12,7 +12,7 @@ constexpr const size_t worldWidth = 10;
 /**
     Default height of the field.
 */
-constexpr const size_t worldHeight = 20;
+constexpr const size_t worldHeight = 3;//20;
 
 /**
     Height of the area at the top of the playfield.

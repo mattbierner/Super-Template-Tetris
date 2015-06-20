@@ -58,32 +58,9 @@ int main(int argc, const char* argv[])
     serialize_game<game>();
 */
 
-    using game = gen_grid<6, 6, empty_pixel>;
-
-    using block = gen_grid<2, 2, Pixel<'x', default_gfx::setFg<Color::Green>>>;
-    using block2 = gen_grid<1, 3, Pixel<'x', default_gfx::setFg<Color::Magenta>::setBg<Color::Blue>>>;
-
-   using g2 = //buffer_draw_grid<
-       // Position<1, 0>,
-        //block2,
-        buffer_draw_grid<
-            Position<1, 1>,
-            block,
-            game>;
-    
-    struct xx {
-        template <typename x>
-        using apply = identity<std::integral_constant<bool, x::value != '\0'>>;
-    };
-    
-   // using g = buffer_draw_grid<Position<4, 1>, typename OBlock::pieces, game>;
-
-    //Printer<g>::Print(std::cout);
-
-
     Printer<typename Play<InitialState,
         Input::LRot, Input::Left, Input::Left, Input::Left, Input::Left, Input::Left, Input::Up,
-        Input::Left, Input::Left, Input::Left, Input::Up>::type>::Print(std::cout);
+        Input::Left, Input::Left, Input::Left, Input::Up, Input::Right>::type>::Print(std::cout);
 
     return 0;
 }

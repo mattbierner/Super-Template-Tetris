@@ -47,7 +47,7 @@ struct State
 {
     static constexpr const PlayerState playerState = currentPlayerState;
     static constexpr const unsigned score = currentScore;
-    
+
     using position = currentPosition;
     using block = currentBlock;
     
@@ -56,6 +56,15 @@ struct State
     using random = currentBlockGenerator;
     using nextBlock = typename currentBlockGenerator::next::value;
 
+    /**
+        Is the block currently colliding with any pieces in the playfield?
+    */
+    using isCollision =
+        playfield_is_colliding<
+            position,
+            typename block::pieces,
+            world>;
+    
     template <typename newPos>
     using set_position = State<playerState, score, delay, newPos, block, world, random>;
     
@@ -67,6 +76,8 @@ struct State
     
     template <typename newBlock>
     using set_block = State<playerState, score, delay, position, newBlock, world, random>;
+    
+    using set_game_over = State<PlayerState::Dead, score, delay, position, block, world, random>;
     
     /**
     */
@@ -158,21 +169,19 @@ struct move_block<Input::LRot, state> {
 /**
     Move the block in response to player input.
     
-    This happens before gravity is applied.
+    Happens before gravity is applied.
 */
 template <
     Input input,
     typename state>
 struct move {
     using next = typename move_block<input, state>::type;
-    
-    using type = std::conditional_t<
-        playfield_is_colliding<
-            typename next::position,
-            typename next::block::pieces,
-            typename next::world>::value,
-        state,
-        next>;
+    using type = std::conditional_t<next::isCollision::value, state, next>;
+};
+
+template <typename state>
+struct move<Input::Up, state> {
+    using type = place_piece<typename HardDrop<state>::type>;
 };
 
 /**
@@ -188,22 +197,23 @@ struct step {
     template <typename s>
     struct Down {
         using gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        
-        using type = std::conditional_t<
-            playfield_is_colliding<typename gnext::position, typename gnext::block::pieces, typename gnext::world>::value,
-            s,
-            gnext>;
+        using type = std::conditional_t<gnext::isCollision::value, s, gnext>;
+    };
+    
+    template <typename s>
+    struct CheckGameOver {
+        using type =
+            std::conditional_t<
+                playfield_is_colliding<
+                    Position<0, 0>,
+                    gen_grid<s::world::width, deathZoneHeight, o_cell>,
+                    typename s::world>::value,
+                typename s::set_game_over,
+                s>;
     };
 
-    using type = typename Down<typename move<input, state>::type>::type;
-};
-
-/**
-    Hard drop the current piece.
-*/
-template <typename state>
-struct step<Input::Up, state> {
-    using type = place_piece<typename HardDrop<state>::type>;
+    using type = typename CheckGameOver<
+        typename Down<typename move<input, state>::type>::type>::type;
 };
 
 /**
@@ -290,12 +300,6 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         world,
         death_buffer>;
 
-    // Draw current block
-    using block_buffer = buffer_draw_grid<
-        Position<1, 1>::add<position>,
-        typename block::pieces,
-        play_buffer>;
-
     using ghostState = typename HardDrop<self>::type;
 
     struct ToGhostPiece {
@@ -309,10 +313,16 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
     using ghostPiece = f_map<ToGhostPiece, typename ghostState::block::pieces>;
 
     // Draw ghost
-    using buffer = buffer_draw_grid<
+    using ghost_buffer = buffer_draw_grid<
         Position<1, 1>::add<typename ghostState::position>,
         ghostPiece,
-        block_buffer>;
+        play_buffer>;
+    
+    // Draw current block
+    using buffer = buffer_draw_grid<
+        Position<1, 1>::add<position>,
+        typename block::pieces,
+        ghost_buffer>;
 
     static void Print(std::ostream& output)
     {
