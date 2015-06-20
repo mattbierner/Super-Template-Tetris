@@ -82,7 +82,8 @@ int main(int argc, const char* argv[])
 
 
     Printer<typename Play<InitialState,
-        Input::LRot, Input::Left, Input::Left, Input::Left, Input::Left, Input::Left, Input::Up>::type>::Print(std::cout);
+        Input::LRot, Input::Left, Input::Left, Input::Left, Input::Left, Input::Left, Input::Up,
+        Input::Left, Input::Left>::type>::Print(std::cout);
 
     return 0;
 }
