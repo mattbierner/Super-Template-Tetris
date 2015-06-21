@@ -3,6 +3,7 @@
 #include "color.h"
 #include "string.h"
 #include "serialize.h"
+
 /**
     Styling that tells how to render pixels.
 */
@@ -41,6 +42,12 @@ struct Pixel {
     Is not drawn when combining grids.
 */
 struct empty_pixel { };
+
+/**
+    Is a cell empty?
+*/
+template <typename x>
+using is_empty = std::is_same<x, empty_pixel>;
 
 /*------------------------------------------------------------------------------
     ToString

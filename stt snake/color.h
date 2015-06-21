@@ -5,8 +5,7 @@
 /**
     Supported drawing colors.
 */
-enum class Color
-{
+enum class Color {
     Default,
     Black,
     Red,
@@ -30,7 +29,7 @@ template <> struct ColorToFgCode<Color::Yellow> {   using type = decltype("\x1b[
 template <> struct ColorToFgCode<Color::Blue> {     using type = decltype("\x1b[34m"_string); };
 template <> struct ColorToFgCode<Color::Magenta> {  using type = decltype("\x1b[35m"_string); };
 template <> struct ColorToFgCode<Color::Cyan> {     using type = decltype("\x1b[36m"_string); };
-template <> struct ColorToFgCode<Color::White> {     using type = decltype("\x1b[37m"_string); };
+template <> struct ColorToFgCode<Color::White> {    using type = decltype("\x1b[37m"_string); };
 
 template <Color c>
 using color_to_fg_code = typename ColorToFgCode<c>::type;
@@ -47,7 +46,7 @@ template <> struct ColorToBgCode<Color::Yellow> {   using type = decltype("\x1b[
 template <> struct ColorToBgCode<Color::Blue> {     using type = decltype("\x1b[44m"_string); };
 template <> struct ColorToBgCode<Color::Magenta> {  using type = decltype("\x1b[45m"_string); };
 template <> struct ColorToBgCode<Color::Cyan> {     using type = decltype("\x1b[46m"_string); };
-template <> struct ColorToBgCode<Color::White> {     using type = decltype("\x1b[47m"_string); };
+template <> struct ColorToBgCode<Color::White> {    using type = decltype("\x1b[47m"_string); };
 
 template <Color c>
 using color_to_bg_code = typename ColorToBgCode<c>::type;

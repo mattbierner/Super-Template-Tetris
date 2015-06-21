@@ -233,7 +233,6 @@ struct step<input, State<PlayerState::Dead, score, delay, position, block, world
 template <Input input, typename state>
 using step_t = typename step<input, state>::type;
 
-
 /*------------------------------------------------------------------------------
     Printer
 */
@@ -311,12 +310,12 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
                 Pixel<'~', default_gfx>>;
     };
 
-    using ghostPiece = f_map<ToGhostPiece, typename ghostState::block::pieces>;
+    using as_ghost_piece = f_map<ToGhostPiece, typename ghostState::block::pieces>;
 
     // Draw ghost
     using ghost_buffer = buffer_draw_grid<
         Position<1, 1>::add<typename ghostState::position>,
-        ghostPiece,
+        as_ghost_piece,
         play_buffer>;
     
     // Draw current block

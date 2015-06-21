@@ -8,8 +8,7 @@
 /**
     Type of block.
 */
-enum class BlockType : unsigned
-{
+enum class BlockType : unsigned {
     None,
     I,
     J,
@@ -28,7 +27,7 @@ struct Block {
     static constexpr const BlockType kind = k;
     
     using orientations = o;
-    using pieces = get_t<r, o>;
+    using pieces = get<r, o>;
     
     using rotateCw = Block<k, (r + 1) % o::size, o>;
     using rotateCcw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
@@ -36,7 +35,7 @@ struct Block {
     struct ToGhostPiece {
         template <typename x>
         using apply =
-            std::conditional<std::is_same<x, empty_pixel>::value,
+            std::conditional<is_empty<x>::value,
                 empty_pixel,
                 Pixel<'~', default_gfx>>;
     };
@@ -44,7 +43,7 @@ struct Block {
     /**
         Get a ghost piece to show where a block will land.
     */
-    using ghostPiece = f_map<ToGhostPiece, pieces>;
+    using as_ghost_piece = f_map<ToGhostPiece, pieces>;
 };
 
 using x_cell = empty_pixel;
@@ -186,18 +185,13 @@ using ZBlock = Block<BlockType::Z, 0,
 */
 using blocks = List<IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock>;
 
-
 /*------------------------------------------------------------------------------
     SerializeToString
 */
 template <BlockType x>
 struct SerializeToString<SerializableValue<BlockType, x>> {
     using type =
-        string_add<
-            decltype("static_cast<BlockType>("_string),
-            string_add<
-                int_to_string<static_cast<unsigned>(x)>,
-                String<')'>>>;
+        serialize_enum_to_string<decltype("BlockType"_string), BlockType, x>;
 };
 
 template <BlockType k, size_t r, typename o>

@@ -25,13 +25,9 @@ constexpr const size_t deathZoneHeight = 4;
 using InitialWorld = gen_grid<worldWidth, worldHeight + deathZoneHeight, x_cell>;
 
 /**
-    Is a cell empty?
-*/
-template <typename x>
-using is_empty = std::is_same<x, empty_pixel>;
-
-/**
     Is a given position is empty?
+    
+    Positions outside of the grid are not considered empty.
 */
 template <typename pos, typename grid>
 struct playfield_is_empty {
@@ -40,7 +36,7 @@ struct playfield_is_empty {
     };
 
     using type = logical_and<
-        grid_is_in_bounds<pos, grid>::value,
+        grid_is_in_bounds<pos, grid>,
         check>;
 };
 
@@ -54,7 +50,6 @@ struct PlayfieldGetPositionsReducer {
         std::conditional<is_empty<caar<c>>::value,
             p,
             cons<typename car<c>::template add<offset>, p>>;
-    
 };
 
 template <typename grid, typename offset = Position<0, 0>>
@@ -65,6 +60,7 @@ using playfield_get_positions =
         grid_zip_positions<grid>>;
 
 /**
+    Check if a collision is occuring for a given block.
 */
 template <typename position, typename block, typename grid>
 struct PlayfieldIsCollidingCheck {

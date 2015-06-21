@@ -1,6 +1,3 @@
-/**
-    Basic 1D list.
-*/
 #pragma once
 
 #include "foldable.h"
@@ -13,7 +10,7 @@
 */
 template <typename... elements>
 struct List {
-    static const size_t size = sizeof...(elements);
+    static constexpr const size_t size = sizeof...(elements);
 };
 
 /**
@@ -29,7 +26,6 @@ struct Car<List<x, xs...>> {
 
 template <typename list>
 using car = typename Car<list>::type;
-
 
 /**
     Get the rest of a list, excluding the head.
@@ -54,7 +50,6 @@ using caar = car<cdr<list>>;
 template <typename list>
 using caaar = car<cdr<cdr<list>>>;
 
-
 /**
     Prepend a value onto a list
 */
@@ -70,58 +65,77 @@ template <typename x, typename list>
 using cons = typename Cons<x, list>::type;
 
 /**
-    Lookup a value in a list.
+    Lookup the value at index `N` in a list.
 */
 template <size_t N, typename list>
-struct get;
+struct Get;
 
 template <size_t N, typename list>
-using get_t = typename get<N, list>::type;
+using get = typename Get<N, list>::type;
 
 template <typename x, typename... xs>
-struct get<0, List<x, xs...>> {
+struct Get<0, List<x, xs...>> {
     using type = x;
 };
 
 template <size_t N, typename x, typename... xs>
-struct get<N, List<x, xs...>> {
-    using type = get_t<N - 1, List<xs...>>;
+struct Get<N, List<x, xs...>> {
+    using type = get<N - 1, List<xs...>>;
 };
 
 /**
-   Set the value at index `N` in the list.
+   Set the value at index `N` in a list.
 */
 template <size_t N, typename newValue, typename list>
-struct put;
+struct Put;
 
 template <size_t N, typename newValue, typename list>
-using put_t = typename put<N, newValue, list>::type;
+using put = typename Put<N, newValue, list>::type;
 
 template <typename newValue, typename x, typename... xs>
-struct put<0, newValue, List<x, xs...>> {
+struct Put<0, newValue, List<x, xs...>> {
     using type = List<newValue, xs...>;
 };
 
 template <size_t N, typename newValue, typename x, typename... xs>
-struct put<N, newValue, List<x, xs...>> {
-    using type = cons<x, put_t<N - 1, newValue, List<xs...>>>;
+struct Put<N, newValue, List<x, xs...>> {
+    using type = cons<x, put<N - 1, newValue, List<xs...>>>;
+};
+
+/**
+   Remove the value at index `N` in a list.
+*/
+template <size_t N, typename list>
+struct SliceOut;
+
+template <size_t N, typename list>
+using slice_out = typename SliceOut<N, list>::type;
+
+template <typename x, typename... xs>
+struct SliceOut<0, List<x, xs...>> {
+    using type = List<xs...>;
+};
+
+template <size_t N, typename x, typename... xs>
+struct SliceOut<N, List<x, xs...>> {
+    using type = cons<x, slice_out<N - 1, List<xs...>>>;
 };
 
 /**
     Build a list of `element` repeated `N` times.
 */
 template <size_t N, typename element>
-struct gen {
-    using type = cons<element, typename gen<N - 1, element>::type>;
+struct Gen {
+    using type = cons<element, typename Gen<N - 1, element>::type>;
 };
 
 template <typename element>
-struct gen<0, element> {
+struct Gen<0, element> {
     using type = List<>;
 };
 
 template <size_t N, typename element>
-using gen_t = typename gen<N, element>::type;
+using gen = typename Gen<N, element>::type;
 
 /**
     Zip
@@ -169,9 +183,10 @@ struct Fmap<f, List<>> {
 
 template <typename f, typename x, typename... xs>
 struct Fmap<f, List<x, xs...>> {
-    using type = cons<
-        call<f, x>,
-        f_map<f, List<xs...>>>;
+    using type =
+        cons<
+            call<f, x>,
+            f_map<f, List<xs...>>>;
 };
 
 /*------------------------------------------------------------------------------

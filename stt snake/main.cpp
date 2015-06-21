@@ -1,14 +1,7 @@
 #include <iostream>
-#include <sstream>
 #include <fstream>
 
-//#include "cell.h"
-//#include "direction.h"
 #include "list.h"
-#include "buffer.h"
-#include "playfield.h"
-#include "blocks.h"
-#include "block_generator.h"
 #include "game.h"
  
 /**
@@ -25,7 +18,6 @@ void serialize_game()
     s << ";";
     s.close();
 }
-
 
 template <typename s, Input... inputs>
 struct Play {
@@ -59,7 +51,7 @@ int main(int argc, const char* argv[])
         Input::LRot, Input::Left, Input::Left, Input::Drop,
         Input::LRot, Input::Right, Input::Right, Input::Drop>::type;
 
-    serialize_game<car<game>>();
+   // serialize_game<car<game>>();
 
     Printer<game>::Print(std::cout);
 

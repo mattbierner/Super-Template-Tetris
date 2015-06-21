@@ -14,9 +14,16 @@ template <typename r>
 struct Grid {
     using rows = r;
     
-    static constexpr const size_t width = get_t<0, r>::size;
-    static constexpr const size_t height = rows::size;
+    struct GetWidth {
+        using type = std::integral_constant<size_t, get<0, r>::size>;
+    };
     
+    static constexpr const size_t height = rows::size;
+    static constexpr const size_t width =
+        branch<height == 0,
+            identity<std::integral_constant<size_t, 0>>,
+            GetWidth>::value;
+
     template <typename pos>
     using nextPosition =
         Position<
@@ -28,7 +35,7 @@ struct Grid {
     Generate an `width` by `height` grid of `value`.
 */
 template <size_t width, size_t height, typename value>
-using gen_grid = Grid<gen_t<height, gen_t<width, value>>>;
+using gen_grid = Grid<gen<height, gen<width, value>>>;
 
 /**
     Create a single line grid from a list.
@@ -47,22 +54,22 @@ template <Orientation orientation, size_t size, typename cell>
 using create_line_grid =
     create_list_grid<
         orientation,
-        gen_t<size, cell>>;
+        gen<size, cell>>;
 
 /**
     Get the element at `pos(x, y)` in a grid.
 */
 template <typename pos, typename grid>
-using grid_get = get_t<pos::x, get_t<pos::y, typename grid::rows>>;
+using grid_get = get<pos::x, get<pos::y, typename grid::rows>>;
 
 /**
     Set the element at `pos(x, y)` in a grid to `value`.
 */
 template <typename pos, typename value, typename g>
 using grid_put = Grid<
-    put_t<
+    put<
         pos::y,
-        put_t<pos::x, value, get_t<pos::y, typename g::rows>>,
+        put<pos::x, value, get<pos::y, typename g::rows>>,
         typename g::rows>>;
 
 /**
@@ -70,10 +77,66 @@ using grid_put = Grid<
     and the value to be placed.
 */
 template <typename combine, typename pos, typename value, typename g>
-using grid_try_put = grid_put<
-    pos,
-    call<combine, grid_get<pos, g>, value>,
-    g>;
+using grid_try_put =
+    grid_put<
+        pos,
+        call<combine, grid_get<pos, g>, value>,
+        g>;
+
+/**
+    Remove row `N` from a grid.
+*/
+template <size_t N, typename g>
+using grid_remove_row =
+    Grid<
+        slice_out<N, typename g::rows>>;
+
+static_assert(
+    std::is_same<
+        Grid<List<
+            List<float>,
+            List<bool>>>,
+        grid_remove_row<0, Grid<List<
+            List<int>,
+            List<float>,
+            List<bool>>>
+        >>::value, "");
+
+static_assert(
+    std::is_same<
+        Grid<List<
+            List<int>,
+            List<bool>>>,
+        grid_remove_row<1, Grid<List<
+            List<int>,
+            List<float>,
+            List<bool>>>
+        >>::value, "");
+
+/**
+    Add a new row to the head of grid, shifting the rest of the grid down by one.
+*/
+template <typename newRow, typename g>
+using grid_cons_row =
+    Grid<
+        cons<newRow, typename g::rows>>;
+
+static_assert(
+    std::is_same<
+        Grid<List<
+            List<bool>>>,
+        grid_cons_row<List<bool>, Grid<List<>>>
+        >::value, "");
+
+static_assert(
+    std::is_same<
+        Grid<List<
+            List<bool>,
+            List<int>>>,
+        grid_cons_row<
+            List<bool>,
+            Grid<List<List<int>>>>
+        >::value, "");
 
 /**
     Transform a grid into a grid of cordinate value pairs.
@@ -102,29 +165,22 @@ using grid_zip_positions =
     Is `pos` within the width of the grid?
 */
 template <typename pos, typename g>
-using grid_is_in_xbounds =
-    std::integral_constant<bool,
-        (pos::x >= 0 && pos::x < g::width)>;
-
+constexpr bool grid_is_in_xbounds = pos::x >= 0 && pos::x < g::width;
 
 /**
     Is `pos` within the height of the grid?
 */
 template <typename pos, typename g>
-using grid_is_in_ybounds =
-    std::integral_constant<bool,
-        (pos::y >= 0 && pos::y < g::height)>;
+constexpr bool grid_is_in_ybounds = pos::y >= 0 && pos::y < g::height;
 
 /**
     Is `pos` within the grid?
 */
 template <typename pos, typename g>
-using grid_is_in_bounds =
-    std::integral_constant<bool,
-        grid_is_in_xbounds<pos, g>::value && grid_is_in_ybounds<pos, g>::value>;
+constexpr bool grid_is_in_bounds = grid_is_in_xbounds<pos, g> && grid_is_in_ybounds<pos, g>;
 
 /**
-    Set the element at `pos(x, y)` in a grid to `value`.
+    Place a row of value on this grid using binary function `combine`.
 */
 template <typename combine, typename origin, typename row, typename grid>
 struct GridPlaceRow {
@@ -140,7 +196,7 @@ struct GridPlaceRow {
                 grid>::type>;
     };
 
-    using type = branch<grid_is_in_bounds<origin, grid>::value,
+    using type = branch<grid_is_in_bounds<origin, grid>,
         IsInBounds,
         identity<grid>>;
 };
@@ -154,7 +210,7 @@ template <typename combine, typename origin, typename row, typename grid>
 using grid_place_row = typename GridPlaceRow<combine, origin, row, grid>::type;
 
 /**
-    Draw another buffer on top of this buffer.
+    Place another grid with this grid using binary function `combine`.
 */
 template <typename combine, typename origin, typename other, typename grid>
 struct GridPlaceGrid;
