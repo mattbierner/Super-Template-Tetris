@@ -30,15 +30,15 @@ using InitialWorld = gen_grid<worldWidth, worldHeight + deathZoneHeight, x_cell>
     Positions outside of the grid are not considered empty.
 */
 template <typename pos, typename grid>
-struct playfield_is_empty {
-    struct check {
-        using type = is_empty<grid_get<pos, grid>>;
-    };
-
-    using type = logical_and<
-        grid_is_in_bounds<pos, grid>,
-        check>;
+struct CheckIsEmpty {
+    using type = is_empty<grid_get<pos, grid>>;
 };
+
+template <typename pos, typename grid>
+constexpr const bool playfield_is_empty =
+    logical_and<
+        grid_is_in_bounds<pos, grid>,
+        Thunk<CheckIsEmpty, pos, grid>>::value;
 
 /**
     Get a list of all non empty positions.
@@ -67,11 +67,35 @@ struct PlayfieldIsCollidingCheck {
     template <typename c>
     using apply =
         identity<std::integral_constant<bool,
-            !playfield_is_empty<c, grid>::type::value>>;
+            !playfield_is_empty<c, grid>>>;
 };
 
 template <typename position, typename block, typename grid>
-using playfield_is_colliding =
+constexpr const bool playfield_is_colliding =
     any<
         PlayfieldIsCollidingCheck<position, block, grid>,
         playfield_get_positions<block, position>>;
+
+/**
+    Check if row `N` is full.
+*/
+template <size_t N, typename g>
+constexpr const bool playfield_row_is_full =
+    !any<
+        mfunc<IsEmpty>,
+        get<N, typename g::rows>>;
+
+static_assert(
+    !playfield_row_is_full<0,
+        gen_grid<2, 2, empty_pixel>>, "");
+
+static_assert(
+    playfield_row_is_full<0,
+        gen_grid<2, 2, Pixel<'x'>>>, "");
+
+static_assert(
+    !playfield_row_is_full<0,
+        grid_put<
+            Position<0, 0>,
+            empty_pixel,
+            gen_grid<2, 2, Pixel<'x'>>>>, "");

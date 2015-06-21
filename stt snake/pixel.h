@@ -47,6 +47,11 @@ struct empty_pixel { };
     Is a cell empty?
 */
 template <typename x>
+struct IsEmpty {
+    using type = std::is_same<x, empty_pixel>;
+};
+
+template <typename x>
 using is_empty = std::is_same<x, empty_pixel>;
 
 /*------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ struct AnyReducer {
 };
 
 template <typename f, typename s>
-using any = fold<AnyReducer<f>, std::false_type, s>;
+constexpr const bool any = fold<AnyReducer<f>, std::false_type, s>::value;
 
 /**
     Check if a predicate functor `f` holds true for every value in `s`.
@@ -36,4 +36,4 @@ struct EveryReducer {
 };
 
 template <typename f, typename s>
-using every = fold<EveryReducer<f>, std::true_type, s>;
+constexpr const bool every = fold<EveryReducer<f>, std::true_type, s>::value;

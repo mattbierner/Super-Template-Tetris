@@ -58,7 +58,7 @@ struct State
     /**
         Is the block currently colliding with any pieces in the playfield?
     */
-    using is_collision =
+    static constexpr const bool is_collision =
         playfield_is_colliding<
             position,
             typename block::pieces,
@@ -128,7 +128,7 @@ struct HardDrop {
         using type = typename HardDrop<next>::type;
     };
     
-    using type = branch<next::is_collision::value, identity<state>, con>;
+    using type = branch<next::is_collision, identity<state>, con>;
 };
 
 /**
@@ -167,7 +167,7 @@ template <
     typename state>
 struct move {
     using next = typename move_block<input, state>::type;
-    using type = std::conditional_t<next::is_collision::value, state, next>;
+    using type = std::conditional_t<next::is_collision, state, next>;
 };
 
 template <typename state>
@@ -188,7 +188,7 @@ struct step {
     template <typename s>
     struct Down {
         using gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        using type = std::conditional_t<gnext::is_collision::value, s, gnext>;
+        using type = std::conditional_t<gnext::is_collision, s, gnext>;
     };
     
     /**
@@ -207,7 +207,7 @@ struct step {
             playfield_is_colliding<
                 Position<0, 0>,
                 gen_grid<s::world::width, deathZoneHeight, o_cell>,
-                typename s::world>::value,
+                typename s::world>,
             typename s::set_game_over,
             s>;
 
