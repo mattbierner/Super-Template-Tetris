@@ -23,16 +23,15 @@ using InitialRandom = LinearGenerator<uint32_t, 12345>;
 static const size_t standardDelay = 1;
 
 /**
-    General state of the player
+    General state of the player.
 */
-enum class PlayerState : unsigned
-{
+enum class PlayerState : unsigned {
     Alive,
     Dead
 };
 
 /**
-    State of a snake game.
+    State of the game.
 */
 template <
     PlayerState currentPlayerState,
@@ -42,8 +41,7 @@ template <
     typename currentBlock,
     typename currentWorld,
     typename currentBlockGenerator>
-struct State
-{
+struct State {
     static constexpr const PlayerState playerState = currentPlayerState;
     static constexpr const unsigned score = currentScore;
 
@@ -78,6 +76,13 @@ struct State
     
     template <unsigned newScore>
     using set_score = State<playerState, newScore, delay, position, block, world, random>;
+    
+    template <size_t newDelay>
+    using set_delay = State<playerState, score, newDelay, position, block, world, random>;
+    
+    using reset_delay = set_delay<0>;
+    
+    using inc_delay = set_delay<delay + 1>;
     
     using set_game_over = State<PlayerState::Dead, score, delay, position, block, world, random>;
     
@@ -138,26 +143,36 @@ struct HardDrop {
     Attempt to move the block without checking for any collisions.
 */
 template <Input input, typename state>
-struct move_block;
+struct move_block {
+    using type = typename state::inc_delay;
+};
 
 template <typename state>
 struct move_block<Input::Left, state> {
-    using type = typename state::template set_position<typename state::position::template add<Position<-1, 0>>>;
+    using type = typename state
+        ::template set_position<typename state::position::template add<Position<-1, 0>>>
+        ::reset_delay;
 };
 
 template <typename state>
 struct move_block<Input::Right, state> {
-    using type = typename state::template set_position<typename state::position::template add<Position<1, 0>>>;
+    using type = typename state
+        ::template set_position<typename state::position::template add<Position<1, 0>>>
+        ::reset_delay;
 };
 
 template <typename state>
 struct move_block<Input::RRot, state> {
-    using type = typename state::template set_block<typename state::block::rotateCw>;
+    using type = typename state
+        ::template set_block<typename state::block::rotateCw>
+        ::reset_delay;
 };
 
 template <typename state>
 struct move_block<Input::LRot, state> {
-    using type = typename state::template set_block<typename state::block::rotateCcw>;
+    using type = typename state
+        ::template set_block<typename state::block::rotateCcw>
+        ::reset_delay;
 };
 
 /**
@@ -165,9 +180,7 @@ struct move_block<Input::LRot, state> {
     
     Happens before gravity is applied.
 */
-template <
-    Input input,
-    typename state>
+template <Input input, typename state>
 struct move {
     using next = typename move_block<input, state>::type;
     using type = std::conditional_t<next::is_collision, state, next>;
@@ -175,7 +188,7 @@ struct move {
 
 template <typename state>
 struct move<Input::Drop, state> {
-    using type = place_piece<typename HardDrop<state>::type>;
+    using type = typename place_piece<typename HardDrop<state>::type>::reset_delay;
 };
 
 /**
@@ -186,13 +199,24 @@ template <
     typename state>
 struct step {
     /**
-        Apply gravity to the current piece but keep it alive if it collides.
+        Apply gravity to the current piece.
+        
+        If the delay is reached, place the current piece, otherwise keep it alive.
     */
     template <typename s>
-    struct Down {
-        using gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>;
-        using type = std::conditional_t<gnext::is_collision, s, gnext>;
+    struct TryPlaceCollisionPiece {
+        using type =
+             std::conditional_t<s::delay == standardDelay,
+                typename place_piece<s>::reset_delay,
+                s>;
     };
+    
+    template <typename s,
+        typename gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>>
+    using apply_gravity =
+        branch<gnext::is_collision,
+            TryPlaceCollisionPiece<gnext>,
+            identity<gnext>>;
     
     /**
         Update the score based on the number of rows removed.
@@ -236,7 +260,7 @@ struct step {
         Check if the player has lost.
     */
     template <typename s>
-    using CheckGameOver =
+    using check_game_over =
         std::conditional_t<
             playfield_is_colliding<
                 Position<0, 0>,
@@ -245,9 +269,10 @@ struct step {
             typename s::set_game_over,
             s>;
 
-    using type = CheckGameOver<
+    using type =
+        check_game_over<
         update_full_rows<
-            typename Down<typename move<input, state>::type>::type>>;
+        apply_gravity<typename move<input, state>::type>>>;
 };
 
 /**
