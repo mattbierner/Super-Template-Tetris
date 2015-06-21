@@ -239,15 +239,20 @@ struct GridPlaceGrid<combine, origin, Grid<List<>>, g> {
 /*------------------------------------------------------------------------------
     Printer
 */
+#if USE_GAME_TO_STRING
+template <typename... xs>
+struct ToString<Grid<List<xs...>>> {
+    using type = string_join<String<'\n'>, xs...>;
+};
+
+#else
 template <>
-struct Printer<Grid<List<>>>
-{
+struct Printer<Grid<List<>>> {
     static void Print(std::ostream& output) { /* noop */ }
 };
 
 template <typename x, typename... xs>
-struct Printer<Grid<List<x, xs...>>>
-{
+struct Printer<Grid<List<x, xs...>>> {
     static void Print(std::ostream& output)
     {
         Printer<x>::Print(output);
@@ -255,6 +260,7 @@ struct Printer<Grid<List<x, xs...>>>
         Printer<Grid<List<xs...>>>::Print(output);
     }
 };
+#endif
 
 /*------------------------------------------------------------------------------
     Foldable

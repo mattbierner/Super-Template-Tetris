@@ -137,29 +137,6 @@ struct Gen<0, element> {
 template <size_t N, typename element>
 using gen = typename Gen<N, element>::type;
 
-/**
-    Zip
-*/
-template <typename f, typename s1, typename s2>
-struct zip {
-    using type = cons<
-        call<f, car<s1>, car<s2>>,
-        zip<f, cdr<s1>, cdr<s2>>>;
-};
-
-template <typename f, typename s>
-struct zip<f, List<>, s> {
-    using type = List<>;
-};
-
-template <typename f, typename s>
-struct zip<f, s, List<>> {
-    using type = List<>;
-};
-
-template <typename f, typename s1, typename s2>
-using zip_t = typename zip<f, s1, s2>::type;
-
 /*------------------------------------------------------------------------------
     Foldable
 */
@@ -192,21 +169,32 @@ struct Fmap<f, List<x, xs...>> {
 /*------------------------------------------------------------------------------
     Printer
 */
+#if USE_GAME_TO_STRING
 template <>
-struct Printer<List<>>
-{
+struct ToString<List<>> {
+    using type = String<>;
+};
+
+template <typename x, typename... xs>
+struct ToString<List<x, xs...>> {
+    using type = string_add<x, List<xs...>>;
+};
+
+#else
+template <>
+struct Printer<List<>> {
     static void Print(std::ostream& output) { /* noop */ }
 };
 
 template <typename x, typename... xs>
-struct Printer<List<x, xs...>>
-{
+struct Printer<List<x, xs...>> {
     static void Print(std::ostream& output)
     {
         Printer<x>::Print(output);
         Printer<List<xs...>>::Print(output);
     }
 };
+#endif
 
 /*------------------------------------------------------------------------------
     Serialize

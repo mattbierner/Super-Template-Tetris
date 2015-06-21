@@ -5,7 +5,8 @@
 */
 enum class Input : unsigned {
     None,
-    Drop,
+    Drop, // Hard Drop
+    Down, // Soft, move block down by 4
     Left,
     Right,
     LRot,

@@ -1,13 +1,10 @@
-/**
-    Encode a string of characters as a type.
-*/
 #pragma once
 
 #include "boolean.h"
 #include "printer.h"
 
 /**
-    Character input.
+    Encode a string of characters as a type.
 */
 template <char... chars>
 struct String {
@@ -21,7 +18,7 @@ struct String {
 };
 
 /**
-    User defined literal to create a string from a string literal.
+    User defined literal to create a String from a string literal.
 */
 template <typename T, T... chars>
 constexpr auto operator""_string() {
@@ -51,7 +48,7 @@ struct StringCdr<String<x, xs...>> {
 };
 
 /**
-    Interface for a type that can be converted to a string
+    Interface for a type that can be converted to a string.
  */
 template <typename>
 struct ToString;

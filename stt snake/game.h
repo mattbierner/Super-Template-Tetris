@@ -36,7 +36,7 @@ enum class PlayerState : unsigned {
 template <
     PlayerState currentPlayerState,
     unsigned currentScore,
-    size_t delay,
+    size_t currentDelay,
     typename currentPosition,
     typename currentBlock,
     typename currentWorld,
@@ -44,10 +44,10 @@ template <
 struct State {
     static constexpr const PlayerState playerState = currentPlayerState;
     static constexpr const unsigned score = currentScore;
-
+    
+    static constexpr const size_t delay = currentDelay;
     using position = currentPosition;
     using block = currentBlock;
-    
     using world = currentWorld;
     
     using random = currentBlockGenerator;
@@ -81,63 +81,75 @@ struct State {
     using set_delay = State<playerState, score, newDelay, position, block, world, random>;
     
     using reset_delay = set_delay<0>;
-    
     using inc_delay = set_delay<delay + 1>;
     
     using set_game_over = State<PlayerState::Dead, score, delay, position, block, world, random>;
-    
-    /**
-    */
-    using place_initial_piece = State<
-        playerState,
-        score,
-        delay,
-        Position<
-            (currentWorld::width / 2) - (nextBlock::pieces::width) / 2,
-            0>,
-        nextBlock,
-        world,
-        typename random::next>;
 };
 
 /**
-    The initial state of a snake game.
+    Create a new block at the top of the game world.
 */
-using InitialState =
-    typename State<
-        PlayerState::Alive,
-        0,
-        0,
-        Position<0, 0>,
-        typename initialBlockGenerator::value,
-        InitialWorld,
-        initialBlockGenerator>::place_initial_piece;
+template <typename s>
+using place_initial_piece =
+    typename s
+        ::template set_position<
+            Position<
+                (s::world::width / 2) - (s::nextBlock::pieces::width) / 2,
+                0>>
+        ::template set_block<typename s::nextBlock>
+        ::template set_random<typename s::random::next>;
+
+/**
+    The initial state of a game.
+*/
+using initialState =
+    place_initial_piece<
+        State<
+            PlayerState::Alive,
+            0,
+            0,
+            Position<0, 0>,
+            typename initialBlockGenerator::value,
+            InitialWorld,
+            initialBlockGenerator>>;
 
 /**
     Place the current piece in the world and generate a new piece.
 */
 template <typename s>
 using place_piece =
-    typename s::template set_world<
-        buffer_draw_grid<
-            typename s::position,
-            typename s::block::pieces,
-            typename s::world>
-        >::place_initial_piece;
+    place_initial_piece<
+        typename s::template set_world<
+            buffer_draw_grid<
+                typename s::position,
+                typename s::block::pieces,
+                typename s::world>>>;
 
 /**
-    Hard drop the current piece.
+    Move the current piece at most `max` times down or until it collides with 
+    something.
 */
-template <typename state>
-struct HardDrop {
+template <size_t max, typename state>
+struct Drop {
     using next = typename state::template set_position<typename state::position::template add<Position<0, 1>>>;
     
-    struct con {
-        using type = typename HardDrop<next>::type;
+    struct NoCollision {
+        using type = typename Drop<max - 1, next>::type;
     };
     
-    using type = branch<next::is_collision, identity<state>, con>;
+    using type = branch<next::is_collision, identity<state>, NoCollision>;
 };
+
+template <typename state>
+struct Drop<0, state> {
+    using type = state;
+};
+
+/**
+    Hard drop the current piece but do not place it.
+*/
+template <typename state>
+using hard_drop = typename Drop<static_cast<size_t>(-1), state>::type;
 
 /**
     Attempt to move the block without checking for any collisions.
@@ -188,15 +200,18 @@ struct move {
 
 template <typename state>
 struct move<Input::Drop, state> {
-    using type = typename place_piece<typename HardDrop<state>::type>::reset_delay;
+    using type = typename place_piece<hard_drop<state>>::reset_delay;
+};
+
+template <typename state>
+struct move<Input::Down, state> {
+    using type = typename Drop<4, state>::type::reset_delay;
 };
 
 /**
     Progress the game by one step by consuming one input.
 */
-template <
-    Input input,
-    typename state>
+template <Input input, typename state>
 struct step {
     /**
         Apply gravity to the current piece.
@@ -204,12 +219,10 @@ struct step {
         If the delay is reached, place the current piece, otherwise keep it alive.
     */
     template <typename s>
-    struct TryPlaceCollisionPiece {
-        using type =
-             std::conditional_t<s::delay == standardDelay,
-                typename place_piece<s>::reset_delay,
-                s>;
-    };
+    using TryPlaceCollisionPiece =
+         std::conditional<s::delay == standardDelay,
+            typename place_piece<s>::reset_delay,
+            s>;
     
     template <typename s,
         typename gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>>
@@ -304,7 +317,12 @@ template <
     typename block,
     typename world,
     typename blockGenerator>
-struct Printer<State<playerState, score, delay, position, block, world, blockGenerator>>
+#if USE_GAME_TO_STRING
+struct ToString<
+#else
+struct Printer<
+#endif
+    State<playerState, score, delay, position, block, world, blockGenerator>>
 {
     using self = State<playerState, score, delay, position, block, world, blockGenerator>;
     
@@ -360,7 +378,7 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         world,
         death_buffer>;
 
-    using ghostState = typename HardDrop<self>::type;
+    using ghostState = hard_drop<self>;
 
     struct ToGhostPiece {
         template <typename x>
@@ -384,10 +402,14 @@ struct Printer<State<playerState, score, delay, position, block, world, blockGen
         typename block::pieces,
         ghost_buffer>;
 
+#if USE_GAME_TO_STRING
+    using type = to_string<buffer>;
+#else
     static void Print(std::ostream& output)
     {
         Printer<buffer>::Print(output);
     }
+#endif
 };
 
 /*------------------------------------------------------------------------------

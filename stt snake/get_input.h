@@ -5,6 +5,8 @@
 static constexpr const Input input =
 #if defined(DROP)
     Input::Drop;
+#elif defined(DOW)
+    Input::Down;
 #elif defined(LEFT)
     Input::Left;
 #elif defined(RIGHT)
