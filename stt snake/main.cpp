@@ -2,10 +2,17 @@
     Should the compile time `ToString` be used in place of the runtime `Print` for
     printing large objects (such as lists and grids)?
     
-    `ToString` is much slower than `Print` so set this to false if printing
+    `ToString` is slower than `Print`, so set this to false if printing
     multiple steps of a game in a single compile.
 */
-#define USE_GAME_TO_STRING 1
+#define USE_GAME_TO_STRING 0
+
+/**
+    Should C++17 fold expressions be used when possible?
+ 
+    Fold expressions should compile faster than recursion.
+*/
+#define USE_FOLD_EXPRESSIONS 0
 
 #include <iostream>
 #include <fstream>
@@ -55,12 +62,10 @@ int main(int argc, const char* argv[])
 
 #include "get_input.h"
 
-/**
-   using game = play<initialState,
+   /*using game = play<initialState,
         Input::Down, Input::LRot, Input::Left, Input::Left, Input::Drop,
         Input::LRot, Input::Right, Input::Right, Input::Drop>;
 */
-
     using game = step_t<input, state>;
     
     Printer<game>::Print(std::cout);

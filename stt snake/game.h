@@ -295,12 +295,9 @@ template <
     Input input,
     unsigned score,
     size_t delay,
-    typename position,
-    typename block,
-    typename world,
-    typename blockGenerator>
-struct step<input, State<PlayerState::Dead, score, delay, position, block, world, blockGenerator>> {
-    using type = State<PlayerState::Dead, score, delay, position, block, world, blockGenerator>;
+    typename... state>
+struct step<input, State<PlayerState::Dead, score, delay, state...>> {
+    using type = State<PlayerState::Dead, score, delay, state...>;
 };
 
 template <Input input, typename state>
@@ -348,7 +345,7 @@ struct Printer<
             Orientation::Horizontal,
             uiSize,
             std::conditional_t<playerState == PlayerState::Dead,
-                decltype("Game Over"_string),
+                decltype("GameOver"_string),
                 String<>>,
             default_gfx,
         buffer_draw_centered_text<
@@ -405,9 +402,9 @@ struct Printer<
 #if USE_GAME_TO_STRING
     using type = to_string<buffer>;
 #else
-    static void Print(std::ostream& output)
+    static std::ostream& Print(std::ostream& output)
     {
-        Printer<buffer>::Print(output);
+        return Printer<buffer>::Print(output);
     }
 #endif
 };

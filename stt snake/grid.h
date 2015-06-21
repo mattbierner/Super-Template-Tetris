@@ -246,18 +246,12 @@ struct ToString<Grid<List<xs...>>> {
 };
 
 #else
-template <>
-struct Printer<Grid<List<>>> {
-    static void Print(std::ostream& output) { /* noop */ }
-};
-
-template <typename x, typename... xs>
-struct Printer<Grid<List<x, xs...>>> {
-    static void Print(std::ostream& output)
+template <typename... rows>
+struct Printer<Grid<List<rows...>>> {
+    static std::ostream& Print(std::ostream& output)
     {
-        Printer<x>::Print(output);
-        output << "\n";
-        Printer<Grid<List<xs...>>>::Print(output);
+        bool Do[] = { true, (Printer<rows>::Print(output) << "\n", true)... };
+        return output;
     }
 };
 #endif
@@ -285,8 +279,7 @@ struct Fmap<f, Grid<rows>> {
         using apply = identity<f_map<f, x>>;
     };
     
-    using type = Grid<
-        f_map<inner, rows>>;
+    using type = Grid<f_map<inner, rows>>;
 };
 
 /*------------------------------------------------------------------------------

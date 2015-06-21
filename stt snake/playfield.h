@@ -7,7 +7,7 @@
 /**
     Default width of the field.
 */
-constexpr const size_t worldWidth = 4;
+constexpr const size_t worldWidth = 10;
 
 /**
     Default height of the field.
@@ -43,7 +43,7 @@ constexpr const bool playfield_is_empty =
 /**
     Get a list of all non empty positions.
 */
-template <typename grid, typename offset = Position<0, 0>>
+template <typename grid, typename offset>
 struct PlayfieldGetPositionsReducer {
     template <typename p, typename c>
     using apply =

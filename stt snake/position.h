@@ -38,18 +38,6 @@ struct Size {
     static constexpr const size_t height = h;
 };
 
-
-/*------------------------------------------------------------------------------
-    Printer
-*/
-template <int x, int y>
-struct Printer<Position<x, y>> {
-    static void Print(std::ostream& output)
-    {
-        output << "<" << x << ", " << y << ">";
-    }
-};
-
 /*------------------------------------------------------------------------------
     Serialize
 */

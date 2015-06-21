@@ -12,15 +12,6 @@ struct identity {
 };
 
 /**
-    Create a metafunction that returns `T` when called with any arguments.
-*/
-template <typename T>
-struct constant {
-    template <typename...>
-    using apply = identity<T>;
-};
-
-/**
     Call a metafunction with a set of arguments.
 */
 template <typename f, typename... args>
@@ -42,13 +33,4 @@ template <typename f, typename... bound>
 struct partial {
     template <typename... args>
     using apply = identity<call<f, bound..., args...>>;
-};
-
-/**
-    Flip
-*/
-template <typename f>
-struct flip {
-    template <typename x, typename y>
-    using apply = call<f, y, x>;
 };

@@ -153,47 +153,30 @@ struct Foldable<f, z, List<x, xs...>> {
 /*------------------------------------------------------------------------------
     Functor
 */
-template <typename f>
-struct Fmap<f, List<>> {
-    using type = List<>;
-};
-
-template <typename f, typename x, typename... xs>
-struct Fmap<f, List<x, xs...>> {
-    using type =
-        cons<
-            call<f, x>,
-            f_map<f, List<xs...>>>;
+template <typename f, typename... elements>
+struct Fmap<f, List<elements...>> {
+    using type = List<call<f, elements>...>;
 };
 
 /*------------------------------------------------------------------------------
     Printer
 */
 #if USE_GAME_TO_STRING
-template <>
-struct ToString<List<>> {
-    using type = String<>;
-};
-
-template <typename x, typename... xs>
-struct ToString<List<x, xs...>> {
-    using type = string_add<x, List<xs...>>;
+template <typename... elements>
+struct ToString<List<elements...>> {
+    using type = string_join<String<>, elements...>;
 };
 
 #else
-template <>
-struct Printer<List<>> {
-    static void Print(std::ostream& output) { /* noop */ }
-};
-
-template <typename x, typename... xs>
-struct Printer<List<x, xs...>> {
-    static void Print(std::ostream& output)
+template <typename... elements>
+struct Printer<List<elements...>> {
+    static std::ostream&  Print(std::ostream& output)
     {
-        Printer<x>::Print(output);
-        Printer<List<xs...>>::Print(output);
+        bool Do[] = { (Printer<elements>::Print(output), true)... };
+        return output;
     }
 };
+
 #endif
 
 /*------------------------------------------------------------------------------
