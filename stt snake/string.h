@@ -187,28 +187,14 @@ static_assert(
 /*------------------------------------------------------------------------------
  * Printer
  */
-#if USE_FOLD_EXPRESSIONS
-template <char... xs>
-struct Printer<String<xs...>> {
+template <char... elements>
+struct Printer<String<elements...>> {
     static std::ostream& Print(std::ostream& output)
     {
-        return (output << ... << xs);
+        bool Do[] = {true, (output << elements, true)... };
+        return output;
     }
 };
-#else
-template <>
-struct Printer<String<>> {
-    static std::ostream& Print(std::ostream& output) { return output; }
-};
-
-template <char x, char... xs>
-struct Printer<String<x, xs...>> {
-    static std::ostream& Print(std::ostream& output)
-    {
-        return Printer<String<xs...>>::Print(output << x);
-    }
-};
-#endif
 
 /*------------------------------------------------------------------------------
     Printer - General specilaization for any type that implements `ToString`

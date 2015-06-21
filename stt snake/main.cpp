@@ -7,13 +7,6 @@
 */
 #define USE_GAME_TO_STRING 0
 
-/**
-    Should C++17 fold expressions be used when possible?
- 
-    Fold expressions should compile faster than recursion.
-*/
-#define USE_FOLD_EXPRESSIONS 0
-
 #include <iostream>
 #include <fstream>
 
