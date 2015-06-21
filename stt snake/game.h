@@ -76,6 +76,9 @@ struct State
     template <typename newBlock>
     using set_block = State<playerState, score, delay, position, newBlock, world, random>;
     
+    template <unsigned newScore>
+    using set_score = State<playerState, newScore, delay, position, block, world, random>;
+    
     using set_game_over = State<PlayerState::Dead, score, delay, position, block, world, random>;
     
     /**
@@ -192,6 +195,23 @@ struct step {
     };
     
     /**
+        Update the score based on the number of rows removed.
+    */
+    template <size_t rowsRemoved, typename s>
+    using update_score =
+        typename s::template set_score<
+            s::score +
+                (rowsRemoved == 1
+                    ?40
+                :rowsRemoved == 2
+                    ?100
+                :rowsRemoved == 3
+                    ?300
+                :rowsRemoved == 4
+                    ?1200
+                    :0)>;
+    
+    /**
         Collapse all full rows and update score.
     */
     struct RemoveFullRow {
@@ -205,9 +225,12 @@ struct step {
                         typename p::world>>>>;
     };
     
-    template <typename s>
+    template <typename s,
+        typename fullRows = playfield_get_full_rows<typename s::world>>
     using update_full_rows =
-        fold<RemoveFullRow, s, playfield_get_full_rows<typename s::world>>;
+        update_score<
+            fullRows::size,
+            fold<RemoveFullRow, s, fullRows>>;
     
     /**
         Check if the player has lost.
