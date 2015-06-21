@@ -192,11 +192,22 @@ struct step {
     };
     
     /**
+        Collapse all full rows and update score.
     */
-    template <typename s>
-    struct Score {
-        
+    struct RemoveFullRow {
+        template <typename p, typename c>
+        using apply = identity<
+            typename p::template set_world<
+                grid_cons_row<
+                    gen<p::world::width, empty_pixel>,
+                    grid_remove_row<
+                        c::value,
+                        typename p::world>>>>;
     };
+    
+    template <typename s>
+    using update_full_rows =
+        fold<RemoveFullRow, s, playfield_get_full_rows<typename s::world>>;
     
     /**
         Check if the player has lost.
@@ -212,7 +223,8 @@ struct step {
             s>;
 
     using type = CheckGameOver<
-        typename Down<typename move<input, state>::type>::type>;
+        update_full_rows<
+            typename Down<typename move<input, state>::type>::type>>;
 };
 
 /**
