@@ -6,6 +6,14 @@ Implementation of Tetris as a C++ template metaprogramming. All the logic is imp
 ## Playing
 Plays one step of the game every time the game is recompiled. Uses compiler flags to control input:
 
+Start a new game:
+
+```
+$ ./reset.sh
+```
+
+Playing:
+
 ```
 $ clang++ -std=c++1z main.cpp -Wno-gnu-string-literal-operator-template -D COMMAND -o tetris ; ./tetris
 ```
@@ -26,7 +34,6 @@ is moved down. Pieces have a one step delay before being auto placed (that is, w
 a piece collides with a block, it but will only be placed on the next step
 if no further movement is performed). 
 
-Run `reset.sh` to start a new game.
 
 ### Compiling
 * `-std=c++1z` since the program uses a few C++17 features.

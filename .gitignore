@@ -208,9 +208,9 @@ xcuserdata
 #
 #*.xccheckout
 
+
+
+
 ### Other
 *~
-libgob/deps/*
-
-### DF Data
-*.GOB
+current_game.h

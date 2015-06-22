@@ -3,7 +3,7 @@
 #include "input.h"
 
 static constexpr const Input input =
-#if defined(DROP)
+#if defined(HARD)
     Input::Hard;
 #elif defined(SOFT)
     Input::Soft;
