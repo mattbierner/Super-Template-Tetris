@@ -41,8 +41,12 @@ if no further movement is performed).
 
 
 ## Example
+A few screenshots:
 
-```
+![Initial game](/documents/1.png?raw=true)
 
+![Clearing a row](/documents/2.png?raw=true)
 
-```
+![Clearing 3 rows](/documents/3.png?raw=true)
+
+![Game over](/documents/4.png?raw=true)

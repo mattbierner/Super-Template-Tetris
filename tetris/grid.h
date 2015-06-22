@@ -73,17 +73,6 @@ using grid_put = Grid<
         typename g::rows>>;
 
 /**
-    Modify the current value at pos using a function that takes the current value
-    and the value to be placed.
-*/
-template <typename combine, typename pos, typename value, typename g>
-using grid_try_put =
-    grid_put<
-        pos,
-        call<combine, grid_get<pos, g>, value>,
-        g>;
-
-/**
     Remove row `N` from a grid.
 */
 template <size_t N, typename g>
@@ -177,28 +166,41 @@ constexpr bool grid_is_in_ybounds = pos::y >= 0 && pos::y < g::height;
     Is `pos` within the grid?
 */
 template <typename pos, typename g>
-constexpr bool grid_is_in_bounds = grid_is_in_xbounds<pos, g> && grid_is_in_ybounds<pos, g>;
+constexpr const bool grid_is_in_bounds = grid_is_in_xbounds<pos, g> && grid_is_in_ybounds<pos, g>;
+
+/**
+    Modify the current value at pos using a function that takes the current value
+    and the value to be placed.
+*/
+template <typename combine, typename pos, typename value, typename g>
+struct GridTryPut {
+    struct DoPut {
+        using type = grid_put<
+            pos,
+            call<combine, grid_get<pos, g>, value>,
+            g>;
+    };
+
+    using type =
+        branch<grid_is_in_bounds<pos, g>,
+            DoPut,
+            identity<g>>;
+};
 
 /**
     Place a row of value on this grid using binary function `combine`.
 */
 template <typename combine, typename origin, typename row, typename grid>
 struct GridPlaceRow {
-    struct IsInBounds {
-        using type = grid_try_put<
+    using type = typename GridTryPut<
+        combine,
+        origin,
+        car<row>,
+        typename GridPlaceRow<
             combine,
-            origin,
-            car<row>,
-            typename GridPlaceRow<
-                combine,
-                typename origin::template add<Position<1, 0>>,
-                cdr<row>,
-                grid>::type>;
-    };
-
-    using type = branch<grid_is_in_bounds<origin, grid>,
-        IsInBounds,
-        identity<grid>>;
+            typename origin::template add<Position<1, 0>>,
+            cdr<row>,
+            grid>::type>::type;
 };
 
 template <typename combine, typename origin, typename grid>
