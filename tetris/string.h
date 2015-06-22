@@ -26,28 +26,6 @@ constexpr auto operator""_string() {
 };
 
 /**
-    Get the head of a string.
-*/
-template <typename>
-struct StringCar;
-
-template <char x, char... xs>
-struct StringCar<String<x, xs...>> {
-    using type = String<x>;
-};
-
-/**
-    Get the rest of a string
-*/
-template <typename>
-struct StringCdr;
-
-template <char x, char... xs>
-struct StringCdr<String<x, xs...>> {
-    using type = String<xs...>;
-};
-
-/**
     Interface for a type that can be converted to a string.
  */
 template <typename>
@@ -78,22 +56,17 @@ using string_add = typename StringAdd<to_string<l>, to_string<r>>::type;
 /**
     Trim a string to be size `n`.
 */
-template <size_t n, typename s>
+template <size_t n, typename s, bool = (n == 0)>
 struct StringTake {
+    using type = String<>;
+};
+
+template <size_t n, char x, char... xs>
+struct StringTake<n, String<x, xs...>, false> {
     using type =
         string_add<
-            typename StringCar<s>::type,
-            typename StringTake<n - 1, typename StringCdr<s>::type>::type>;
-};
-
-template <typename s>
-struct StringTake<0, s> {
-    using type = String<>;
-};
-
-template <size_t n>
-struct StringTake<n, String<>> {
-    using type = String<>;
+            String<x>,
+            typename StringTake<n - 1, String<xs...>>::type>;
 };
 
 template <size_t n, typename s>
@@ -191,7 +164,6 @@ static_assert(
     std::is_same<
         String<'-', '1', '3', '3', '0'>,
         int_to_string<-1330>>::value, "");
-
 
 /*------------------------------------------------------------------------------
  * Printer

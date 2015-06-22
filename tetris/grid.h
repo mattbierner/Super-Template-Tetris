@@ -253,6 +253,7 @@ struct Printer<Grid<List<rows...>>> {
     static std::ostream& Print(std::ostream& output)
     {
         bool Do[] = { true, (Printer<rows>::Print(output) << "\n", true)... };
+        (void)Do;
         return output;
     }
 };

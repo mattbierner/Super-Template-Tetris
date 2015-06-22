@@ -94,7 +94,7 @@ using place_initial_piece =
     typename s
         ::template set_position<
             Position<
-                (s::world::width / 2) - (s::nextBlock::pieces::width) / 2,
+                (s::world::width / 2) - (s::nextBlock::pieces::width / 2),
                 0>>
         ::template set_block<typename s::nextBlock>
         ::template set_random<typename s::random::next>;
@@ -380,22 +380,10 @@ struct Printer<
         world,
         death_buffer>;
 
-    using ghostState = hard_drop<self>;
-
-    struct ToGhostPiece {
-        template <typename x>
-        using apply =
-            std::conditional<std::is_same<x, empty_pixel>::value,
-                empty_pixel,
-                Pixel<'~', default_gfx>>;
-    };
-
-    using as_ghost_piece = f_map<ToGhostPiece, typename ghostState::block::pieces>;
-
     // Draw ghost
     using ghost_buffer = buffer_draw_grid<
-        Position<1, 1>::add<typename ghostState::position>,
-        as_ghost_piece,
+        Position<1, 1>::add<typename hard_drop<self>::position>,
+        typename hard_drop<self>::block::as_ghost_piece,
         play_buffer>;
     
     // Draw current block
@@ -417,14 +405,10 @@ struct Printer<
 /*------------------------------------------------------------------------------
     Serialize
 */
-template <>
-struct SerializeToString<SerializableValue<PlayerState, PlayerState::Alive>> {
-    using type = decltype("PlayerState::Alive"_string);
-};
-
-template <>
-struct SerializeToString<SerializableValue<PlayerState, PlayerState::Dead>> {
-    using type = decltype("PlayerState::Dead"_string);
+template <PlayerState x>
+struct SerializeToString<SerializableValue<PlayerState, x>> {
+    using type =
+        serialize_enum_to_string<decltype("PlayerState"_string), PlayerState, x>;
 };
 
 template <

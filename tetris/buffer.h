@@ -10,8 +10,9 @@
 template <size_t width, size_t height>
 using empty_buffer = gen_grid<width, height, empty_pixel>;
 
+
 /**
-    Set the element at `pos(x, y)` in a grid to `value`.
+    Draw another buffer on top of this buffer.
 */
 struct BufferCombine {
     template <typename current, typename toPlace>
@@ -21,12 +22,6 @@ struct BufferCombine {
             toPlace>;
 };
 
-template <typename origin, typename row, typename grid>
-using draw_row = grid_place_row<BufferCombine, origin, row, grid>;
-
-/**
-    Draw another buffer on top of this buffer.
-*/
 template <typename origin, typename other, typename grid>
 using buffer_draw_grid = grid_place_grid<BufferCombine, origin, other, grid>;
 
@@ -87,9 +82,8 @@ using buffer_draw_rect =
         gen_grid<size::width, size::height, px>,
         buffer>;
 
-
 /**
-    Draw a empty box.
+    Draw an empty box.
 */
 template <typename origin, typename size, typename px, typename buffer>
 using buffer_draw_rect_outline =
