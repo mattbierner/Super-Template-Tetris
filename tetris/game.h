@@ -233,7 +233,7 @@ struct step {
         typename gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>>
     using apply_gravity =
         branch<gnext::is_collision,
-            TryPlaceCollisionPiece<gnext>,
+            TryPlaceCollisionPiece<s>,
             identity<gnext>>;
     
     /**

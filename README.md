@@ -15,7 +15,7 @@ $ ./reset.sh
 Playing:
 
 ```
-$ clang++ -std=c++1z main.cpp -Wno-gnu-string-literal-operator-template -D COMMAND -o tetris ; ./tetris
+$ clang++ main.cpp -std=c++1z -Wno-gnu-string-literal-operator-template -D COMMAND -o tetris ; ./tetris
 ```
 
 Valid commands are:

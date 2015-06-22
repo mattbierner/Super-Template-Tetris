@@ -146,7 +146,7 @@ using string_join = typename StringJoin<joiner, elements...>::type;
 /**
     Convert an integer value into a string.
 */
-template <size_t val>
+template <long val>
 struct IntToString {
     struct Rec {
         using type =
@@ -161,8 +161,11 @@ struct IntToString {
             Rec>;
 };
 
-template <size_t val>
-using int_to_string = typename IntToString<val>::type;
+template <long val>
+using int_to_string =
+    string_add<
+        std::conditional_t<val >= 0, String<>, String<'-'>>,
+        typename IntToString<val >= 0 ? val : -val>::type>;
 
 static_assert(
     std::is_same<
@@ -183,6 +186,12 @@ static_assert(
     std::is_same<
         String<'1', '3', '3', '0'>,
         int_to_string<1330>>::value, "");
+
+static_assert(
+    std::is_same<
+        String<'-', '1', '3', '3', '0'>,
+        int_to_string<-1330>>::value, "");
+
 
 /*------------------------------------------------------------------------------
  * Printer
