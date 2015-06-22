@@ -10,12 +10,6 @@
 #include "playfield.h"
 
 /**
-    Seed for the random number generator.
-*/
-template <unsigned max>
-using InitialRandom = LinearGenerator<uint32_t, 12345>;
-
-/**
     Number of game steps to delay before a block is automatically placed.
     
     Movement resets the delay.
@@ -224,10 +218,12 @@ struct step {
         If the delay is reached, place the current piece, otherwise keep it alive.
     */
     template <typename s>
-    using TryPlaceCollisionPiece =
-         std::conditional<s::delay == standardDelay,
-            typename place_piece<s>::reset_delay,
-            s>;
+    struct TryPlaceCollisionPiece {
+         using type =
+            std::conditional_t<(s::delay >= standardDelay),
+                typename place_piece<s>::reset_delay,
+                s>;
+    };
     
     template <typename s,
         typename gnext = typename s::template set_position<typename s::position::template add<Position<0, 1>>>>

@@ -190,53 +190,34 @@ struct GridTryPut {
 /**
     Place a row of value on this grid using binary function `combine`.
 */
-template <typename combine, typename origin, typename row, typename grid>
+template <typename combine>
 struct GridPlaceRow {
-    using type = typename GridTryPut<
-        combine,
-        origin,
-        car<row>,
-        typename GridPlaceRow<
-            combine,
-            typename origin::template add<Position<1, 0>>,
-            cdr<row>,
-            grid>::type>::type;
-};
-
-template <typename combine, typename origin, typename grid>
-struct GridPlaceRow<combine, origin, List<>, grid> {
-    using type = grid;
+    template <typename p, typename c>
+    struct apply {
+        using type = List<
+            typename GridTryPut<combine, caar<p>, c, car<p>>::type,
+            typename caar<p>::template add<Position<1, 0>>>;
+    };
 };
 
 template <typename combine, typename origin, typename row, typename grid>
-using grid_place_row = typename GridPlaceRow<combine, origin, row, grid>::type;
+using grid_place_row = car<fold<GridPlaceRow<combine>, List<grid, origin>, row>>;
 
 /**
     Place another grid with this grid using binary function `combine`.
 */
-template <typename combine, typename origin, typename other, typename grid>
-struct GridPlaceGrid;
-
-template <typename combine, typename origin, typename other, typename grid>
-using grid_place_grid = typename GridPlaceGrid<combine, origin, other, grid>::type;
-
-template <typename combine, typename origin, typename otherRows, typename g>
-struct GridPlaceGrid<combine, origin, Grid<otherRows>, g> {
-    using type = grid_place_row<
-        combine,
-        origin,
-        car<otherRows>,
-        grid_place_grid<
-            combine,
-            typename origin::template add<Position<0, 1>>,
-            Grid<cdr<otherRows>>,
-            g>>;
+template <typename combine>
+struct GridPlaceGrid {
+    template <typename p, typename c>
+    struct apply {
+        using type = List<
+            grid_place_row<combine, caar<p>, c, car<p>>,
+            typename caar<p>::template add<Position<0, 1>>>;
+    };
 };
 
-template <typename combine, typename origin, typename g>
-struct GridPlaceGrid<combine, origin, Grid<List<>>, g> {
-    using type = g;
-};
+template <typename combine, typename origin, typename other, typename grid>
+using grid_place_grid = car<fold<GridPlaceGrid<combine>, List<grid, origin>, typename other::rows>>;
 
 /*------------------------------------------------------------------------------
     Printer
