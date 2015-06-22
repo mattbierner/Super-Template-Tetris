@@ -60,13 +60,13 @@ int main(int argc, const char* argv[])
 
 /*
    using game = play<initialState,
-        Input::Down, Input::LRot, Input::Left, Input::Left, Input::Drop,
-        Input::LRot, Input::Right, Input::Right, Input::Drop>;
+        Input::Down, Input::LRot, Input::Left, Input::Left, Input::Hard,
+        Input::LRot, Input::Right, Input::Right, Input::Hard>;
 */
     using game = step_t<input, state>;
     
-    Printer<game>::Print(std::cout);
-    serialize_game<initialState>();
+    Printer<game>::Print(std::cout) << "\n";
+    serialize_game<game>();
 
     return 0;
 }

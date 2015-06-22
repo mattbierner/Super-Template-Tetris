@@ -4,8 +4,10 @@
 
 static constexpr const Input input =
 #if defined(DROP)
-    Input::Drop;
-#elif defined(DOW)
+    Input::Hard;
+#elif defined(SOFT)
+    Input::Soft;
+#elif defined(DOWN)
     Input::Down;
 #elif defined(LEFT)
     Input::Left;

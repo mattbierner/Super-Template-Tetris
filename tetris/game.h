@@ -199,8 +199,13 @@ struct move {
 };
 
 template <typename state>
-struct move<Input::Drop, state> {
+struct move<Input::Hard, state> {
     using type = typename place_piece<hard_drop<state>>::reset_delay;
+};
+
+template <typename state>
+struct move<Input::Soft, state> {
+    using type = typename hard_drop<state>::reset_delay;
 };
 
 template <typename state>

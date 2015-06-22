@@ -191,7 +191,8 @@ template <char... elements>
 struct Printer<String<elements...>> {
     static std::ostream& Print(std::ostream& output)
     {
-        bool Do[] = {true, (output << elements, true)... };
+        bool Do[] = { true, (output << elements, true)... };
+        (void)Do;
         return output;
     }
 };
@@ -201,7 +202,7 @@ struct Printer<String<elements...>> {
 */
 template <typename s>
 struct Printer<s> {
-    static void Print(std::ostream& output) {
-        Printer<to_string<s>>::Print(output);
+    static std::ostream& Print(std::ostream& output) {
+        return Printer<to_string<s>>::Print(output);
     }
 };
