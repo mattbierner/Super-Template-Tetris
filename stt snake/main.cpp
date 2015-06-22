@@ -5,7 +5,7 @@
     `ToString` is slower than `Print`, so set this to false if printing
     multiple steps of a game in a single compile.
 */
-#define USE_GAME_TO_STRING 0
+#define USE_GAME_TO_STRING 1
 
 #include <iostream>
 #include <fstream>

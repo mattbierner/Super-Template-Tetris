@@ -35,7 +35,7 @@ struct Block {
     struct ToGhostPiece {
         template <typename x>
         using apply =
-            std::conditional<is_empty<x>::value,
+            std::conditional<is_empty<x>,
                 empty_pixel,
                 Pixel<'~', default_gfx>>;
     };

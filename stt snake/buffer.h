@@ -13,34 +13,25 @@ using empty_buffer = gen_grid<width, height, empty_pixel>;
 /**
     Set the element at `pos(x, y)` in a grid to `value`.
 */
-template <typename pos, typename cell, typename g>
-using buffer_try_put =
-    std::conditional_t<std::is_same<cell, empty_pixel>::value,
-        g,
-        grid_put<pos, cell, g>>;
-
-/**
-    Set the element at `pos(x, y)` in a grid to `value`.
-*/
-struct buffer_combine {
+struct BufferCombine {
     template <typename current, typename toPlace>
     using apply =
-        std::conditional<std::is_same<toPlace, empty_pixel>::value,
+        std::conditional<is_empty<toPlace>,
             current,
             toPlace>;
 };
 
 template <typename origin, typename row, typename grid>
-using draw_row = grid_place_row<buffer_combine, origin, row, grid>;
+using draw_row = grid_place_row<BufferCombine, origin, row, grid>;
 
 /**
     Draw another buffer on top of this buffer.
 */
 template <typename origin, typename other, typename grid>
-using buffer_draw_grid = grid_place_grid<buffer_combine, origin, other, grid>;
+using buffer_draw_grid = grid_place_grid<BufferCombine, origin, other, grid>;
 
 /**
-    Draw a line.
+    Draw a line of `px` repeated `len` times.
 */
 template <typename origin, Orientation orientation, size_t len, typename px, typename buffer>
 using buffer_draw_line =
@@ -70,25 +61,21 @@ using buffer_draw_text = typename BufferDrawText<origin, orientation, str, gfx, 
 /**
     Draw centered text.
 */
-template <typename origin, Orientation orientation, size_t max, typename str, typename gfx, typename buffer>
-struct BufferDrawCenteredText;
-
-template <typename origin, Orientation orientation, size_t max, typename gfx, typename buffer, char... chars>
-struct BufferDrawCenteredText<origin, orientation, max, String<chars...>, gfx, buffer> {
-    using str = typename StringTake<max, String<chars...>>::type;
-
-    using type =
-        buffer_draw_text<
-            typename origin::template add<create_offset<orientation, (max - str::size) / 2>>,
-            orientation,
-            str,
-            gfx,
-            buffer>;
-};
-
-template <typename origin, Orientation orientation, size_t max, typename str, typename gfx, typename buffer>
-using buffer_draw_centered_text = typename BufferDrawCenteredText<origin, orientation, max, str, gfx, buffer>::type;
-
+template <
+    typename origin,
+    Orientation orientation,
+    size_t max,
+    typename str,
+    typename gfx,
+    typename buffer,
+    typename trimmedStr = typename StringTake<max, str>::type>
+using buffer_draw_centered_text =
+    buffer_draw_text<
+        typename origin::template add<create_offset<orientation, (max - trimmedStr::size) / 2>>,
+        orientation,
+        trimmedStr,
+        gfx,
+        buffer>;
 
 /**
     Draw a filled box.

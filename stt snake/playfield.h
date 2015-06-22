@@ -30,9 +30,8 @@ using InitialWorld = gen_grid<worldWidth, worldHeight + deathZoneHeight, x_cell>
     Positions outside of the grid are not considered empty.
 */
 template <typename pos, typename grid>
-struct CheckIsEmpty {
-    using type = is_empty<grid_get<pos, grid>>;
-};
+struct CheckIsEmpty :
+    IsEmpty<grid_get<pos, grid>> { };
 
 template <typename pos, typename grid>
 constexpr const bool playfield_is_empty =
@@ -47,7 +46,7 @@ template <typename grid, typename offset>
 struct PlayfieldGetPositionsReducer {
     template <typename p, typename c>
     using apply =
-        std::conditional<is_empty<caar<c>>::value,
+        std::conditional<is_empty<caar<c>>,
             p,
             cons<typename car<c>::template add<offset>, p>>;
 };

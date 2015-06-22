@@ -2,7 +2,6 @@
 
 #include "blocks.h"
 #include "random.h"
-#include "string.h"
 #include "serialize.h"
 
 /**

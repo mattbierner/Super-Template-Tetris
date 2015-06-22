@@ -52,7 +52,7 @@ struct IsEmpty {
 };
 
 template <typename x>
-using is_empty = std::is_same<x, empty_pixel>;
+constexpr const bool is_empty = std::is_same<x, empty_pixel>::value;
 
 /*------------------------------------------------------------------------------
     ToString
