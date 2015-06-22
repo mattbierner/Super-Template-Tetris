@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		894C66871A6A0CCD00F4AF80 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 894C66861A6A0CCD00F4AF80 /* main.cpp */; };
+		898EA0981B37A3D200798871 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 898EA08D1B37A3D200798871 /* main.cpp */; };
+		898EA09B1B37A3E200798871 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 898EA09A1B37A3E200798871 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,29 +24,33 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8906D2661B34DD63001A2CA3 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
-		892AE3B01B35F2AD00B12DD6 /* current_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = current_game.h; sourceTree = "<group>"; };
-		89397A761B27F9A600160727 /* position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = position.h; sourceTree = "<group>"; };
-		89397A771B27FDF700160727 /* utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
-		89397A781B27FF2100160727 /* foldable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = foldable.h; sourceTree = "<group>"; };
-		89397A791B2814A900160727 /* grid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grid.h; sourceTree = "<group>"; };
-		89397A7A1B28172400160727 /* pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pixel.h; sourceTree = "<group>"; };
-		89397A7B1B291ECD00160727 /* blocks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = blocks.h; sourceTree = "<group>"; };
 		894C66831A6A0CCD00F4AF80 /* stt tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "stt tetris"; sourceTree = BUILT_PRODUCTS_DIR; };
-		894C66861A6A0CCD00F4AF80 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		894C668D1A6A0CF800F4AF80 /* list.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
-		894C668E1A6A0E8300F4AF80 /* functor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functor.h; sourceTree = "<group>"; };
-		894C66901A6A116400F4AF80 /* printer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = printer.h; sourceTree = "<group>"; };
-		894C66911A6A135A00F4AF80 /* buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
-		894C66931A6A1B8F00F4AF80 /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
-		894C66941A6A1F9A00F4AF80 /* input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
-		894C66961A6A259C00F4AF80 /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
-		894C66971A6A297700F4AF80 /* playfield.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = playfield.h; sourceTree = "<group>"; };
-		894C66981A6AF97D00F4AF80 /* boolean.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boolean.h; sourceTree = "<group>"; };
-		89C67C201B33B99100FB41AE /* block_generator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = block_generator.h; sourceTree = "<group>"; };
-		89C67C211B33D4D000FB41AE /* string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string.h; sourceTree = "<group>"; };
-		89CECF591A6DFDA200138F41 /* serialize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = serialize.h; sourceTree = "<group>"; };
-		89CECF5C1A6E0F5F00138F41 /* get_input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = get_input.h; sourceTree = "<group>"; };
+		898EA0801B37A3D200798871 /* block_generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = block_generator.h; path = tetris/block_generator.h; sourceTree = SOURCE_ROOT; };
+		898EA0811B37A3D200798871 /* blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = blocks.h; path = tetris/blocks.h; sourceTree = SOURCE_ROOT; };
+		898EA0821B37A3D200798871 /* boolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = boolean.h; path = tetris/boolean.h; sourceTree = SOURCE_ROOT; };
+		898EA0831B37A3D200798871 /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = buffer.h; path = tetris/buffer.h; sourceTree = SOURCE_ROOT; };
+		898EA0841B37A3D200798871 /* color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = color.h; path = tetris/color.h; sourceTree = SOURCE_ROOT; };
+		898EA0851B37A3D200798871 /* current_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = current_game.h; path = tetris/current_game.h; sourceTree = SOURCE_ROOT; };
+		898EA0861B37A3D200798871 /* foldable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = foldable.h; path = tetris/foldable.h; sourceTree = SOURCE_ROOT; };
+		898EA0871B37A3D200798871 /* functor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = functor.h; path = tetris/functor.h; sourceTree = SOURCE_ROOT; };
+		898EA0881B37A3D200798871 /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game.h; path = tetris/game.h; sourceTree = SOURCE_ROOT; };
+		898EA0891B37A3D200798871 /* get_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = get_input.h; path = tetris/get_input.h; sourceTree = SOURCE_ROOT; };
+		898EA08A1B37A3D200798871 /* grid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = grid.h; path = tetris/grid.h; sourceTree = SOURCE_ROOT; };
+		898EA08B1B37A3D200798871 /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input.h; path = tetris/input.h; sourceTree = SOURCE_ROOT; };
+		898EA08C1B37A3D200798871 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list.h; path = tetris/list.h; sourceTree = SOURCE_ROOT; };
+		898EA08D1B37A3D200798871 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = tetris/main.cpp; sourceTree = SOURCE_ROOT; };
+		898EA08E1B37A3D200798871 /* new_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = new_game.h; path = tetris/new_game.h; sourceTree = SOURCE_ROOT; };
+		898EA08F1B37A3D200798871 /* pixel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pixel.h; path = tetris/pixel.h; sourceTree = SOURCE_ROOT; };
+		898EA0901B37A3D200798871 /* playfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playfield.h; path = tetris/playfield.h; sourceTree = SOURCE_ROOT; };
+		898EA0911B37A3D200798871 /* position.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = position.h; path = tetris/position.h; sourceTree = SOURCE_ROOT; };
+		898EA0921B37A3D200798871 /* printer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = printer.h; path = tetris/printer.h; sourceTree = SOURCE_ROOT; };
+		898EA0931B37A3D200798871 /* random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = random.h; path = tetris/random.h; sourceTree = SOURCE_ROOT; };
+		898EA0941B37A3D200798871 /* reset.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = reset.sh; path = tetris/reset.sh; sourceTree = SOURCE_ROOT; };
+		898EA0951B37A3D200798871 /* serialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = serialize.h; path = tetris/serialize.h; sourceTree = SOURCE_ROOT; };
+		898EA0961B37A3D200798871 /* string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = string.h; path = tetris/string.h; sourceTree = SOURCE_ROOT; };
+		898EA0971B37A3D200798871 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utility.h; path = tetris/utility.h; sourceTree = SOURCE_ROOT; };
+		898EA0991B37A3E200798871 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		898EA09A1B37A3E200798871 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +67,8 @@
 		894C667A1A6A0CCD00F4AF80 = {
 			isa = PBXGroup;
 			children = (
+				898EA0991B37A3E200798871 /* LICENSE */,
+				898EA09A1B37A3E200798871 /* README.md */,
 				894C66851A6A0CCD00F4AF80 /* tetris */,
 				894C66841A6A0CCD00F4AF80 /* Products */,
 			);
@@ -78,28 +85,30 @@
 		894C66851A6A0CCD00F4AF80 /* tetris */ = {
 			isa = PBXGroup;
 			children = (
-				892AE3B01B35F2AD00B12DD6 /* current_game.h */,
-				89C67C211B33D4D000FB41AE /* string.h */,
-				894C66861A6A0CCD00F4AF80 /* main.cpp */,
-				89C67C201B33B99100FB41AE /* block_generator.h */,
-				894C66931A6A1B8F00F4AF80 /* game.h */,
-				894C66941A6A1F9A00F4AF80 /* input.h */,
-				894C66911A6A135A00F4AF80 /* buffer.h */,
-				894C668D1A6A0CF800F4AF80 /* list.h */,
-				894C668E1A6A0E8300F4AF80 /* functor.h */,
-				894C66901A6A116400F4AF80 /* printer.h */,
-				894C66961A6A259C00F4AF80 /* random.h */,
-				894C66971A6A297700F4AF80 /* playfield.h */,
-				894C66981A6AF97D00F4AF80 /* boolean.h */,
-				89CECF591A6DFDA200138F41 /* serialize.h */,
-				89CECF5C1A6E0F5F00138F41 /* get_input.h */,
-				89397A761B27F9A600160727 /* position.h */,
-				89397A771B27FDF700160727 /* utility.h */,
-				89397A781B27FF2100160727 /* foldable.h */,
-				89397A791B2814A900160727 /* grid.h */,
-				89397A7A1B28172400160727 /* pixel.h */,
-				89397A7B1B291ECD00160727 /* blocks.h */,
-				8906D2661B34DD63001A2CA3 /* color.h */,
+				898EA0801B37A3D200798871 /* block_generator.h */,
+				898EA0811B37A3D200798871 /* blocks.h */,
+				898EA0821B37A3D200798871 /* boolean.h */,
+				898EA0831B37A3D200798871 /* buffer.h */,
+				898EA0841B37A3D200798871 /* color.h */,
+				898EA0851B37A3D200798871 /* current_game.h */,
+				898EA0861B37A3D200798871 /* foldable.h */,
+				898EA0871B37A3D200798871 /* functor.h */,
+				898EA0881B37A3D200798871 /* game.h */,
+				898EA0891B37A3D200798871 /* get_input.h */,
+				898EA08A1B37A3D200798871 /* grid.h */,
+				898EA08B1B37A3D200798871 /* input.h */,
+				898EA08C1B37A3D200798871 /* list.h */,
+				898EA08D1B37A3D200798871 /* main.cpp */,
+				898EA08E1B37A3D200798871 /* new_game.h */,
+				898EA08F1B37A3D200798871 /* pixel.h */,
+				898EA0901B37A3D200798871 /* playfield.h */,
+				898EA0911B37A3D200798871 /* position.h */,
+				898EA0921B37A3D200798871 /* printer.h */,
+				898EA0931B37A3D200798871 /* random.h */,
+				898EA0941B37A3D200798871 /* reset.sh */,
+				898EA0951B37A3D200798871 /* serialize.h */,
+				898EA0961B37A3D200798871 /* string.h */,
+				898EA0971B37A3D200798871 /* utility.h */,
 			);
 			name = tetris;
 			path = "stt snake";
@@ -161,7 +170,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				894C66871A6A0CCD00F4AF80 /* main.cpp in Sources */,
+				898EA09B1B37A3E200798871 /* README.md in Sources */,
+				898EA0981B37A3D200798871 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

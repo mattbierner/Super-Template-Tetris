@@ -47,22 +47,26 @@ struct Play<s, x, xs...> {
 };
 
 /**
-    Print out the result of the game.
+    Although the entire game is 'played' at compile time, the program must be run
+    to display the current game state and serialize it for the next run.
+    
+    If `USE_GAME_TO_STRING` is enabled, this file and the logic for printing a
+    `String` are the only pieces of runtime bullshit required.
 */
 int main(int argc, const char* argv[])
 {
 #include "current_game.h"
-
 #include "get_input.h"
 
-   /*using game = play<initialState,
+/*
+   using game = play<initialState,
         Input::Down, Input::LRot, Input::Left, Input::Left, Input::Drop,
         Input::LRot, Input::Right, Input::Right, Input::Drop>;
 */
     using game = step_t<input, state>;
     
     Printer<game>::Print(std::cout);
-    serialize_game<game>();
+    serialize_game<initialState>();
 
     return 0;
 }
