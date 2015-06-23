@@ -270,8 +270,8 @@ struct Fmap<f, Grid<rows>> {
     Serialize
 */
 template <typename rows>
-struct SerializeToString<Grid<rows>> {
+struct Serialize<Grid<rows>> {
     using type =
-        serialize_class_to_string<decltype("Grid"_string),
+        serialize_class<decltype("Grid"_string),
             rows>;
 };

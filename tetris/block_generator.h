@@ -18,11 +18,11 @@ using initialBlockGenerator =
         Random<blocks::size>>;
 
 /*------------------------------------------------------------------------------
-    SerializeToString
+    Serialize
 */
 template <typename rand>
-struct SerializeToString<BlockGenerator<rand>> {
+struct Serialize<BlockGenerator<rand>> {
     using type =
-        serialize_class_to_string<decltype("BlockGenerator"_string),
+        serialize_class<decltype("BlockGenerator"_string),
             rand>;
 };

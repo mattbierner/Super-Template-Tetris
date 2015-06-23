@@ -42,9 +42,9 @@ struct Size {
     Serialize
 */
 template <int x, int y>
-struct SerializeToString<Position<x, y>> {
+struct Serialize<Position<x, y>> {
     using type =
-        serialize_class_to_string<decltype("Position"_string),
+        serialize_class<decltype("Position"_string),
             SerializableValue<int, x>,
             SerializableValue<int, y>>;
 };

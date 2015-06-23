@@ -29,9 +29,9 @@ struct Random
     Serialize
 */
 template <typename T, T s, T max, T a, T c>
-struct SerializeToString<LinearGenerator<T, s, max, a, c>> {
+struct Serialize<LinearGenerator<T, s, max, a, c>> {
     using type =
-        serialize_class_to_string<decltype("LinearGenerator"_string),
+        serialize_class<decltype("LinearGenerator"_string),
             T,
             SerializableValue<T, s>,
             SerializableValue<T, max>,
@@ -40,9 +40,9 @@ struct SerializeToString<LinearGenerator<T, s, max, a, c>> {
 };
 
 template <unsigned max, typename rand>
-struct SerializeToString<Random<max, rand>> {
+struct Serialize<Random<max, rand>> {
     using type =
-        serialize_class_to_string<decltype("Random"_string),
+        serialize_class<decltype("Random"_string),
             SerializableValue<unsigned, max>,
             rand>;
 };

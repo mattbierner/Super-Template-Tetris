@@ -186,18 +186,18 @@ using ZBlock = Block<BlockType::Z, 0,
 using blocks = List<IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock>;
 
 /*------------------------------------------------------------------------------
-    SerializeToString
+    Serialize
 */
 template <BlockType x>
-struct SerializeToString<SerializableValue<BlockType, x>> {
+struct Serialize<SerializableValue<BlockType, x>> {
     using type =
-        serialize_enum_to_string<decltype("BlockType"_string), BlockType, x>;
+        serialize_enum<decltype("BlockType"_string), BlockType, x>;
 };
 
 template <BlockType k, size_t r, typename o>
-struct SerializeToString<Block<k, r, o>> {
+struct Serialize<Block<k, r, o>> {
     using type =
-        serialize_class_to_string<decltype("Block"_string),
+        serialize_class<decltype("Block"_string),
             SerializableValue<BlockType, k>,
             SerializableValue<size_t, r>,
             o>;

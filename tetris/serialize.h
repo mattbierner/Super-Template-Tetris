@@ -9,13 +9,13 @@
     Objects are serialized to C++.
 */
 template <typename>
-struct SerializeToString;
+struct Serialize;
 
 template <typename x>
-using serialize_to_string = typename SerializeToString<x>::type;
+using serialize = typename Serialize<x>::type;
 
 template <char... chars>
-struct SerializeToString<String<chars...>> {
+struct Serialize<String<chars...>> {
     using type = String<chars...>;
 };
 
@@ -23,20 +23,20 @@ struct SerializeToString<String<chars...>> {
     Serialize templated class `name` with `elements` template paramters.
 */
 template <typename name, typename... elements>
-using serialize_class_to_string =
+using serialize_class =
     string_add<
         name,
         string_add<
             String<'<'>,
             string_add<
-                string_join<String<','>, serialize_to_string<elements>...>,
+                string_join<String<','>, serialize<elements>...>,
                 String<'>'>>>>;
 
 /**
     Serialize enum class `name` of type `t` and value `x`.
 */
 template <typename name, typename t, t x>
-using serialize_enum_to_string =
+using serialize_enum =
     string_add<
         string_add<
             decltype("static_cast<"_string),
@@ -51,16 +51,16 @@ using serialize_enum_to_string =
     Basic Type Serialization
 */
 template <>
-struct SerializeToString<bool> { using type = decltype("bool"_string); };
+struct Serialize<bool> { using type = decltype("bool"_string); };
 
 template <>
-struct SerializeToString<int> { using type = decltype("int"_string); };
+struct Serialize<int> { using type = decltype("int"_string); };
 
 template <>
-struct SerializeToString<unsigned> { using type = decltype("unsigned"_string); };
+struct Serialize<unsigned> { using type = decltype("unsigned"_string); };
 
 template <>
-struct SerializeToString<size_t> { using type = decltype("size_t"_string); };
+struct Serialize<size_t> { using type = decltype("size_t"_string); };
 
 /*------------------------------------------------------------------------------
     Value Type Serialization
@@ -72,16 +72,12 @@ template <typename T, T x>
 struct SerializableValue { };
 
 template <typename T, T x>
-struct SerializeToString<SerializableValue<T, x>> {
+struct Serialize<SerializableValue<T, x>> {
     using type = int_to_string<x>;
 };
 
 template <>
-struct SerializeToString<SerializableValue<bool, false>> {
-    using type = decltype("false"_string);
-};
+struct Serialize<SerializableValue<bool, false>> { using type = decltype("false"_string); };
 
 template <>
-struct SerializeToString<SerializableValue<bool, true>> {
-    using type = decltype("true"_string);
-};
+struct Serialize<SerializableValue<bool, true>> { using type = decltype("true"_string); };

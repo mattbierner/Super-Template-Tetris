@@ -402,9 +402,9 @@ struct Printer<
     Serialize
 */
 template <PlayerState x>
-struct SerializeToString<SerializableValue<PlayerState, x>> {
+struct Serialize<SerializableValue<PlayerState, x>> {
     using type =
-        serialize_enum_to_string<decltype("PlayerState"_string), PlayerState, x>;
+        serialize_enum<decltype("PlayerState"_string), PlayerState, x>;
 };
 
 template <
@@ -415,9 +415,9 @@ template <
     typename block,
     typename world,
     typename blockGenerator>
-struct SerializeToString<State<playerState, score, delay, position, block, world, blockGenerator>> {
+struct Serialize<State<playerState, score, delay, position, block, world, blockGenerator>> {
     using type =
-        serialize_class_to_string<decltype("State"_string),
+        serialize_class<decltype("State"_string),
             SerializableValue<PlayerState, playerState>,
             SerializableValue<unsigned, score>,
             SerializableValue<size_t, delay>,

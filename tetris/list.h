@@ -183,8 +183,8 @@ struct Printer<List<elements...>> {
     Serialize
 */
 template <typename... elements>
-struct SerializeToString<List<elements...>> {
+struct Serialize<List<elements...>> {
     using type =
-        serialize_class_to_string<decltype("List"_string),
+        serialize_class<decltype("List"_string),
             elements...>;
 };

@@ -23,7 +23,7 @@ void serialize_game()
     s.open("current_game.h");
     s << "#import \"game.h\"\n";
     s << "using state = ";
-    Printer<serialize_to_string<state>>::Print(s);
+    Printer<serialize<state>>::Print(s);
     s << ";";
     s.close();
 }

@@ -54,7 +54,7 @@ template <typename l, typename r>
 using string_add = typename StringAdd<to_string<l>, to_string<r>>::type;
 
 /**
-    Trim a string to be size `n`.
+    Trim a string to be at most size `n`.
 */
 template <size_t n, typename s, bool = (n == 0)>
 struct StringTake {
