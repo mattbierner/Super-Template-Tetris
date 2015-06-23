@@ -164,14 +164,3 @@ static_assert(
         String<'-', '1', '3', '3', '0'>,
         int_to_string<-1330>>::value, "");
 
-/*------------------------------------------------------------------------------
- * Printer
- */
-template <char... elements>
-std::ostream& print(std::ostream& output, String<elements...>)
-{
-    bool Do[] = { true, (output << elements, true)... };
-    (void)Do;
-    return output;
-};
-

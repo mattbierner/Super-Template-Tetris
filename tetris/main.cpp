@@ -2,10 +2,22 @@
 #include <fstream>
 
 #include "list.h"
+#include "string.h"
 #include "game.h"
 
 /**
-    Save the game state.
+    RUNTIME - Print out a string.
+*/
+template <char... elements>
+std::ostream& print(std::ostream& output, String<elements...>)
+{
+    bool Do[] = { true, (output << elements, true)... };
+    (void)Do;
+    return output;
+}
+
+/**
+    RUNTIME - Save the game state.
 */
 template <typename state>
 void serialize_game()
@@ -41,8 +53,7 @@ struct Play<s, x, xs...> {
     Although the entire game is 'played' at compile time, the program must be run
     to display the current game state and serialize it for the next run.
     
-    This file and the logic for printing a `String` are the only pieces of
-    runtime bullshit required.
+    This file contains the only pieces of runtime bullshit required.
 */
 int main(int argc, const char* argv[])
 {
@@ -61,6 +72,3 @@ int main(int argc, const char* argv[])
 
     return 0;
 }
-
-
-
