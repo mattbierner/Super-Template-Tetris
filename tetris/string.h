@@ -1,7 +1,6 @@
 #pragma once
 
 #include "boolean.h"
-#include "printer.h"
 
 /**
     Encode a string of characters as a type.
@@ -169,12 +168,10 @@ static_assert(
  * Printer
  */
 template <char... elements>
-struct Printer<String<elements...>> {
-    static std::ostream& Print(std::ostream& output)
-    {
-        bool Do[] = { true, (output << elements, true)... };
-        (void)Do;
-        return output;
-    }
+std::ostream& print(std::ostream& output, String<elements...>)
+{
+    bool Do[] = { true, (output << elements, true)... };
+    (void)Do;
+    return output;
 };
 

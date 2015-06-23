@@ -43,7 +43,6 @@
 		898EA08F1B37A3D200798871 /* pixel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pixel.h; path = tetris/pixel.h; sourceTree = SOURCE_ROOT; };
 		898EA0901B37A3D200798871 /* playfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playfield.h; path = tetris/playfield.h; sourceTree = SOURCE_ROOT; };
 		898EA0911B37A3D200798871 /* position.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = position.h; path = tetris/position.h; sourceTree = SOURCE_ROOT; };
-		898EA0921B37A3D200798871 /* printer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = printer.h; path = tetris/printer.h; sourceTree = SOURCE_ROOT; };
 		898EA0931B37A3D200798871 /* random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = random.h; path = tetris/random.h; sourceTree = SOURCE_ROOT; };
 		898EA0941B37A3D200798871 /* reset.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = reset.sh; path = tetris/reset.sh; sourceTree = SOURCE_ROOT; };
 		898EA0951B37A3D200798871 /* serialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = serialize.h; path = tetris/serialize.h; sourceTree = SOURCE_ROOT; };
@@ -103,7 +102,6 @@
 				898EA08F1B37A3D200798871 /* pixel.h */,
 				898EA0901B37A3D200798871 /* playfield.h */,
 				898EA0911B37A3D200798871 /* position.h */,
-				898EA0921B37A3D200798871 /* printer.h */,
 				898EA0931B37A3D200798871 /* random.h */,
 				898EA0941B37A3D200798871 /* reset.sh */,
 				898EA0951B37A3D200798871 /* serialize.h */,

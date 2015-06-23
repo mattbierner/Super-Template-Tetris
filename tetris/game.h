@@ -4,7 +4,6 @@
 #include "buffer.h"
 #include "input.h"
 #include "grid.h"
-#include "printer.h"
 #include "random.h"
 #include "serialize.h"
 #include "playfield.h"

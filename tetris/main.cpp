@@ -14,7 +14,7 @@ void serialize_game()
     s.open("current_game.h");
     s << "#import \"game.h\"\n";
     s << "using state = ";
-    Printer<serialize<state>>::Print(s);
+    print(s, serialize<state>{});
     s << ";";
     s.close();
 }
@@ -56,7 +56,7 @@ int main(int argc, const char* argv[])
 */
 
     using game = step_t<input, state>;
-    Printer<to_string<game>>::Print(std::cout) << "\n";
+    print(std::cout, to_string<game>{}) << "\n";
     serialize_game<game>();
 
     return 0;
