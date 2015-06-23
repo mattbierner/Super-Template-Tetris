@@ -1,15 +1,13 @@
 #pragma once
 
 #include <limits>
-#include <stdint.h>
 #include "string.h"
 
 /**
     Random number generator/
 */
 template <typename T, T s, T max = std::numeric_limits<T>::max(), T a = 1103515245, T c = 12345>
-struct LinearGenerator
-{
+struct LinearGenerator {
     using type = T;
     static constexpr const T value = ((long)s * a + c) % max;
     using next = LinearGenerator<T, value, max, a, c>;
@@ -19,8 +17,7 @@ struct LinearGenerator
     Random number generator in [0, max).
 */
 template <unsigned max, typename rand = LinearGenerator<unsigned, 0>>
-struct Random
-{
+struct Random {
     static constexpr const unsigned value = rand::value % max;
     using next = Random<max, typename rand::next>;
 };

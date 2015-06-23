@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ostream>
 #include "string.h"
 
 /**
@@ -13,11 +12,6 @@ struct Serialize;
 
 template <typename x>
 using serialize = typename Serialize<x>::type;
-
-template <char... chars>
-struct Serialize<String<chars...>> {
-    using type = String<chars...>;
-};
 
 /**
     Serialize templated class `name` with `elements` template paramters.
@@ -50,17 +44,10 @@ using serialize_enum =
 /*------------------------------------------------------------------------------
     Basic Type Serialization
 */
-template <>
-struct Serialize<bool> { using type = decltype("bool"_string); };
-
-template <>
-struct Serialize<int> { using type = decltype("int"_string); };
-
-template <>
-struct Serialize<unsigned> { using type = decltype("unsigned"_string); };
-
-template <>
-struct Serialize<size_t> { using type = decltype("size_t"_string); };
+template <> struct Serialize<bool> { using type = decltype("bool"_string); };
+template <> struct Serialize<int> { using type = decltype("int"_string); };
+template <> struct Serialize<unsigned> { using type = decltype("unsigned"_string); };
+template <> struct Serialize<size_t> { using type = decltype("size_t"_string); };
 
 /*------------------------------------------------------------------------------
     Value Type Serialization
@@ -76,8 +63,5 @@ struct Serialize<SerializableValue<T, x>> {
     using type = int_to_string<x>;
 };
 
-template <>
-struct Serialize<SerializableValue<bool, false>> { using type = decltype("false"_string); };
-
-template <>
-struct Serialize<SerializableValue<bool, true>> { using type = decltype("true"_string); };
+template <> struct Serialize<SerializableValue<bool, false>> { using type = decltype("false"_string); };
+template <> struct Serialize<SerializableValue<bool, true>> { using type = decltype("true"_string); };

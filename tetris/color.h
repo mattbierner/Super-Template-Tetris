@@ -5,7 +5,7 @@
 /**
     Supported drawing colors.
 */
-enum class Color {
+enum class Color : unsigned {
     Default,
     Black,
     Red,
