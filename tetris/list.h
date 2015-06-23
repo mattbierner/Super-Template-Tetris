@@ -159,25 +159,12 @@ struct Fmap<f, List<elements...>> {
 };
 
 /*------------------------------------------------------------------------------
-    Printer
+    ToString
 */
-#if USE_GAME_TO_STRING
 template <typename... elements>
 struct ToString<List<elements...>> {
     using type = string_join<String<>, elements...>;
 };
-
-#else
-template <typename... elements>
-struct Printer<List<elements...>> {
-    static std::ostream&  Print(std::ostream& output)
-    {
-        bool Do[] = { (Printer<elements>::Print(output), true)... };
-        return output;
-    }
-};
-
-#endif
 
 /*------------------------------------------------------------------------------
     Serialize

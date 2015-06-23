@@ -1,12 +1,3 @@
-/**
-    Should the compile time `ToString` be used in place of the runtime `Print` for
-    printing large objects (such as lists and grids)?
-    
-    `ToString` is slower than `Print`, so set this to false if printing
-    multiple steps of a game in a single compile.
-*/
-#define USE_GAME_TO_STRING 1
-
 #include <iostream>
 #include <fstream>
 
@@ -50,8 +41,8 @@ struct Play<s, x, xs...> {
     Although the entire game is 'played' at compile time, the program must be run
     to display the current game state and serialize it for the next run.
     
-    If `USE_GAME_TO_STRING` is enabled, this file and the logic for printing a
-    `String` are the only pieces of runtime bullshit required.
+    This file and the logic for printing a `String` are the only pieces of
+    runtime bullshit required.
 */
 int main(int argc, const char* argv[])
 {
@@ -65,13 +56,7 @@ int main(int argc, const char* argv[])
 */
 
     using game = step_t<input, state>;
-
-#if USE_GAME_TO_STRING
     Printer<to_string<game>>::Print(std::cout) << "\n";
-#else
-    Printer<game>::Print(std::cout) << "\n";
-#endif
-
     serialize_game<game>();
 
     return 0;

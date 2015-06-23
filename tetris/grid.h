@@ -220,25 +220,12 @@ template <typename combine, typename origin, typename other, typename grid>
 using grid_place_grid = car<fold<GridPlaceGrid<combine>, List<grid, origin>, typename other::rows>>;
 
 /*------------------------------------------------------------------------------
-    Printer
+    ToString
 */
-#if USE_GAME_TO_STRING
 template <typename... xs>
 struct ToString<Grid<List<xs...>>> {
     using type = string_join<String<'\n'>, xs...>;
 };
-
-#else
-template <typename... rows>
-struct Printer<Grid<List<rows...>>> {
-    static std::ostream& Print(std::ostream& output)
-    {
-        bool Do[] = { true, (Printer<rows>::Print(output) << "\n", true)... };
-        (void)Do;
-        return output;
-    }
-};
-#endif
 
 /*------------------------------------------------------------------------------
     Foldable

@@ -178,14 +178,3 @@ struct Printer<String<elements...>> {
     }
 };
 
-/*------------------------------------------------------------------------------
-    Printer - General specilaization for any type that implements `ToString`
-*/
-#if !USE_GAME_TO_STRING
-template <typename s>
-struct Printer<s> {
-    static std::ostream& Print(std::ostream& output) {
-        return Printer<to_string<s>>::Print(output);
-    }
-};
-#endif

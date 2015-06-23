@@ -14,7 +14,7 @@
     
     Movement resets the delay.
 */
-static const size_t standardDelay = 1;
+static constexpr const size_t standardDelay = 1;
 
 /**
     General state of the player.
@@ -315,11 +315,7 @@ template <
     typename block,
     typename world,
     typename blockGenerator>
-#if USE_GAME_TO_STRING
 struct ToString<
-#else
-struct Printer<
-#endif
     State<playerState, score, delay, position, block, world, blockGenerator>>
 {
     using self = State<playerState, score, delay, position, block, world, blockGenerator>;
@@ -388,14 +384,7 @@ struct Printer<
         typename block::pieces,
         ghost_buffer>;
 
-#if USE_GAME_TO_STRING
     using type = to_string<buffer>;
-#else
-    static std::ostream& Print(std::ostream& output)
-    {
-        return Printer<buffer>::Print(output);
-    }
-#endif
 };
 
 /*------------------------------------------------------------------------------
