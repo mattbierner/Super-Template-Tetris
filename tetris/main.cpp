@@ -63,9 +63,15 @@ int main(int argc, const char* argv[])
         Input::Down, Input::LRot, Input::Left, Input::Left, Input::Hard,
         Input::LRot, Input::Right, Input::Right, Input::Hard>;
 */
+
     using game = step_t<input, state>;
-    
+
+#if USE_GAME_TO_STRING
+    Printer<to_string<game>>::Print(std::cout) << "\n";
+#else
     Printer<game>::Print(std::cout) << "\n";
+#endif
+
     serialize_game<game>();
 
     return 0;
