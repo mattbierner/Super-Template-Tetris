@@ -80,16 +80,20 @@ constexpr const bool playfield_is_colliding =
 */
 struct PlayfieldGetFullRows {
     template <typename p, typename c>
-    using apply = identity<List<
-        std::conditional_t<any<mfunc<IsEmpty>, c>,
-            car<p>,
-            cons<std::integral_constant<size_t, caar<p>::value>, car<p>>>,
-        std::integral_constant<size_t, caar<p>::value + 1>>>;
+    using apply =
+        identity<List<
+            std::conditional_t<any<mfunc<IsEmpty>, c>,
+                car<p>,
+                cons<std::integral_constant<size_t, caar<p>::value>, car<p>>>,
+            std::integral_constant<size_t, caar<p>::value + 1>>>;
 };
 
 template <typename g>
 using playfield_get_full_rows = car<
-    fold<PlayfieldGetFullRows, List<List<>, std::integral_constant<size_t, 0>>, typename g::rows>>;
+    fold<
+        PlayfieldGetFullRows,
+        List<List<>, std::integral_constant<size_t, 0>>,
+        typename g::rows>>;
 
 static_assert(
     std::is_same<

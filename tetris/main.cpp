@@ -11,9 +11,14 @@
 template <char... elements>
 std::ostream& print(std::ostream& output, String<elements...>)
 {
+    // Clang seems to have problems with big folds?
+#if USE_FOLDS
+    return (output << ... << elements);
+#else
     bool Do[] = { true, (output << elements, true)... };
     (void)Do;
     return output;
+#endif
 }
 
 /**

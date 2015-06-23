@@ -214,7 +214,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-ftemplate-depth-1000",
+					"-ftemplate-depth-2000",
 					"-std=c++1z",
 					"-ftemplate-backtrace-limit=0",
 				);
@@ -254,7 +254,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-ftemplate-depth-1000",
+					"-ftemplate-depth-2000",
 					"-std=c++1z",
 					"-ftemplate-backtrace-limit=0",
 				);

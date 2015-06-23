@@ -66,10 +66,12 @@ template <char val, typename gfx>
 struct ToString<Pixel<val, gfx>> {
     using type =
         string_add<
-            typename string_add<
+            string_add<
                 color_to_fg_code<gfx::foreground>,
-                color_to_bg_code<gfx::background>>::template append<val>,
-            colorReset>;
+                color_to_bg_code<gfx::background>>,
+            string_add<
+                String<val>,
+                colorReset>>;
 };
 
 /*------------------------------------------------------------------------------

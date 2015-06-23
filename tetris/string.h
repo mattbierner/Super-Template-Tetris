@@ -8,12 +8,6 @@
 template <char... chars>
 struct String {
     static constexpr const size_t size = sizeof...(chars);
-
-    /**
-        Add additional characters to the end of the string.
-    */
-    template <char... other>
-    using append = String<chars..., other...>;
 };
 
 /**
@@ -44,9 +38,9 @@ using to_string = typename ToString<s>::type;
 template <typename l, typename r>
 struct StringAdd;
 
-template <typename l, char... rs>
-struct StringAdd<l, String<rs...>> {
-    using type = typename l::template append<rs...>;
+template <char... ls, char... rs>
+struct StringAdd<String<ls...>, String<rs...>> {
+    using type = String<ls..., rs...>;
 };
 
 template <typename l, typename r>
