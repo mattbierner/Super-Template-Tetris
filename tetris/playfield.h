@@ -76,49 +76,20 @@ constexpr const bool playfield_is_colliding =
         playfield_get_positions<block, position>>;
 
 /**
-    Check if row `N` is full.
-*/
-template <size_t N, typename g>
-constexpr const bool playfield_row_is_full =
-    !any<
-        mfunc<IsEmpty>,
-        get<N, typename g::rows>>;
-
-static_assert(
-    !playfield_row_is_full<0,
-        gen_grid<2, 2, empty_pixel>>, "");
-
-static_assert(
-    playfield_row_is_full<0,
-        gen_grid<2, 2, Pixel<'x'>>>, "");
-
-static_assert(
-    !playfield_row_is_full<0,
-        grid_put<
-            Position<0, 0>,
-            empty_pixel,
-            gen_grid<2, 2, Pixel<'x'>>>>, "");
-
-/**
     Get the indicies of all full rows.
 */
-template <size_t n, typename g>
 struct PlayfieldGetFullRows {
-    using rest = typename PlayfieldGetFullRows<n + 1, Grid<cdr<typename g::rows>>>::type;
-    
-    using type =
-        std::conditional_t<playfield_row_is_full<0, g>,
-            cons<std::integral_constant<size_t, n>, rest>,
-            rest>;
-};
-
-template <size_t n>
-struct PlayfieldGetFullRows<n, Grid<List<>>> {
-    using type = List<>;
+    template <typename p, typename c>
+    using apply = identity<List<
+        std::conditional_t<any<mfunc<IsEmpty>, c>,
+            car<p>,
+            cons<std::integral_constant<size_t, caar<p>::value>, car<p>>>,
+        std::integral_constant<size_t, caar<p>::value + 1>>>;
 };
 
 template <typename g>
-using playfield_get_full_rows = typename PlayfieldGetFullRows<0, g>::type;
+using playfield_get_full_rows = car<
+    fold<PlayfieldGetFullRows, List<List<>, std::integral_constant<size_t, 0>>, typename g::rows>>;
 
 static_assert(
     std::is_same<
