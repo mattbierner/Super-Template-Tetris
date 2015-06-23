@@ -54,16 +54,16 @@ struct StringTake {
     using type = String<>;
 };
 
+template <size_t n, typename s>
+using string_take = typename StringTake<n, s>::type;
+
 template <size_t n, char x, char... xs>
 struct StringTake<n, String<x, xs...>, false> {
     using type =
         string_add<
             String<x>,
-            typename StringTake<n - 1, String<xs...>>::type>;
+            string_take<n - 1, String<xs...>>>;
 };
-
-template <size_t n, typename s>
-using string_take = typename StringTake<n, s>::type;
 
 static_assert(
     std::is_same<
@@ -86,6 +86,9 @@ static_assert(
 template <typename joiner, typename...>
 struct StringJoin;
 
+template <typename joiner, typename... elements>
+using string_join = typename StringJoin<joiner, elements...>::type;
+
 template <typename joiner, typename first, typename second, typename... rest>
 struct StringJoin<joiner, first, second, rest...> {
     using type =
@@ -93,7 +96,7 @@ struct StringJoin<joiner, first, second, rest...> {
             first,
             string_add<
                 joiner,
-                typename StringJoin<joiner, second, rest...>::type>>;
+                string_join<joiner, second, rest...>>>;
 };
 
 template <typename joiner, typename first>
@@ -105,9 +108,6 @@ template <typename joiner>
 struct StringJoin<joiner> {
     using type = String<>;
 };
-
-template <typename joiner, typename... elements>
-using string_join = typename StringJoin<joiner, elements...>::type;
 
 /**
     Convert an integer value into a string.

@@ -18,28 +18,23 @@ using serialize = typename Serialize<x>::type;
 */
 template <typename name, typename... elements>
 using serialize_class =
-    string_add<
+    string_join<String<>,
         name,
-        string_add<
-            String<'<'>,
-            string_add<
-                string_join<String<','>, serialize<elements>...>,
-                String<'>'>>>>;
+        String<'<'>,
+        string_join<String<','>, serialize<elements>...>,
+        String<'>'>>;
 
 /**
     Serialize enum class `name` of type `t` and value `x`.
 */
 template <typename name, typename t, t x>
 using serialize_enum =
-    string_add<
-        string_add<
-            decltype("static_cast<"_string),
-            string_add<
-                name,
-                String<'>', '('>>>,
-        string_add<
-            int_to_string<static_cast<unsigned>(x)>,
-            String<')'>>>;
+    string_join<String<>,
+        decltype("static_cast<"_string),
+        name,
+        String<'>', '('>,
+        int_to_string<static_cast<unsigned>(x)>,
+        String<')'>>;
 
 /*------------------------------------------------------------------------------
     Basic Type Serialization
