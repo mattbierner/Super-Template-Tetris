@@ -29,7 +29,6 @@ void serialize_game()
 {
     std::ofstream s;
     s.open("current_game.h");
-    s << "#import \"game.h\"\n";
     s << "using state = ";
     print(s, serialize<state>{});
     s << ";";

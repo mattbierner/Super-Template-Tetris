@@ -10,7 +10,6 @@
 template <size_t width, size_t height>
 using empty_buffer = gen_grid<width, height, empty_pixel>;
 
-
 /**
     Draw another buffer on top of this buffer.
 */
