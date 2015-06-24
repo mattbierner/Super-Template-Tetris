@@ -33,7 +33,7 @@ using serialize_enum =
         decltype("static_cast<"_string),
         name,
         String<'>', '('>,
-        int_to_string<static_cast<unsigned>(x)>,
+        int_to_string<static_cast<std::underlying_type_t<t>>(x)>,
         String<')'>>;
 
 /*------------------------------------------------------------------------------

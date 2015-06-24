@@ -153,7 +153,7 @@ struct Foldable<f, z, List<x, xs...>> {
     Functor
 */
 template <typename f, typename... elements>
-struct Fmap<f, List<elements...>> {
+struct FMap<f, List<elements...>> {
     using type = List<call<f, elements>...>;
 };
 

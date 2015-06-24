@@ -43,7 +43,7 @@ template <Orientation orientation, typename list>
 using create_list_grid =
     Grid<
         std::conditional_t<orientation == Orientation::Vertical,
-            f_map<mfunc<List>, list>,
+            fmap<mfunc<List>, list>,
             List<list>>>;
 
 /**
@@ -243,13 +243,13 @@ struct Foldable<f, z, Grid<rows>> {
     Functor
 */
 template <typename f, typename rows>
-struct Fmap<f, Grid<rows>> {
+struct FMap<f, Grid<rows>> {
     struct inner {
         template <typename x>
-        using apply = identity<f_map<f, x>>;
+        using apply = identity<fmap<f, x>>;
     };
     
-    using type = Grid<f_map<inner, rows>>;
+    using type = Grid<fmap<inner, rows>>;
 };
 
 /*------------------------------------------------------------------------------
