@@ -29,11 +29,10 @@ using default_gfx = Gfx<Color::Default, Color::Default>;
     
     Draws a character with a foreground and background color.
 */
-template <char val, typename gfx = default_gfx>
+template <char val, typename g = default_gfx>
 struct Pixel {
     static constexpr const char value = val;
-    static constexpr const Color foreground = gfx::foreground;
-    static constexpr const Color background = gfx::background;
+    using gfx = g;
 };
 
 /**
@@ -93,7 +92,6 @@ struct Serialize<Pixel<val, gfx>> {
             SerializableValue<char, val>,
             gfx>;
 };
-
 
 template <Color fg, Color bg>
 struct Serialize<Gfx<fg, bg>> {

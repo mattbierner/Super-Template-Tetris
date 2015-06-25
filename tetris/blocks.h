@@ -5,32 +5,17 @@
 #include "pixel.h"
 #include "serialize.h"
 
-/**
-    Type of block.
-*/
-enum class BlockType : unsigned {
-    None,
-    I,
-    J,
-    L,
-    O,
-    S,
-    T,
-    Z
-};
 
 /**
     Single tetris piece.
 */
-template <BlockType k, size_t r, typename o>
+template <size_t r, typename o>
 struct Block {
-    static constexpr const BlockType kind = k;
-    
     using orientations = o;
     using pieces = get<r, o>;
     
-    using rotateCw = Block<k, (r + 1) % o::size, o>;
-    using rotateCcw = Block<k, r == 0 ? o::size - 1 : r - 1, o>;
+    using rotateCw = Block<(r + 1) % o::size, o>;
+    using rotateCcw = Block<r == 0 ? o::size - 1 : r - 1, o>;
     
     struct ToGhostPiece {
         template <typename x>
@@ -58,7 +43,7 @@ using z_cell = Pixel<' ', default_gfx::setBg<Color::Red>>;
 /**
     Blocks.
 */
-using IBlock = Block<BlockType::I, 0,
+using IBlock = Block<0,
     List<
         Grid<List<
             List<x_cell, x_cell, x_cell, x_cell>,
@@ -81,7 +66,7 @@ using IBlock = Block<BlockType::I, 0,
             List<x_cell, i_cell, x_cell, x_cell>,
             List<x_cell, i_cell, x_cell, x_cell>>>>>;
 
-using JBlock = Block<BlockType::J, 0,
+using JBlock = Block<0,
     List<
         Grid<List<
             List<j_cell, x_cell, x_cell>,
@@ -100,7 +85,7 @@ using JBlock = Block<BlockType::J, 0,
             List<x_cell, j_cell, x_cell>,
             List<j_cell, j_cell, x_cell>>>>>;
 
-using LBlock = Block<BlockType::L, 0,
+using LBlock = Block<0,
     List<
         Grid<List<
             List<x_cell, x_cell, l_cell>,
@@ -119,11 +104,11 @@ using LBlock = Block<BlockType::L, 0,
             List<x_cell, l_cell, x_cell>,
             List<x_cell, l_cell, x_cell>>>>>;
 
-using OBlock = Block<BlockType::O, 0,
+using OBlock = Block<0,
     List<
         gen_grid<2, 2, o_cell>>>;
 
-using SBlock = Block<BlockType::S, 0,
+using SBlock = Block<0,
     List<
         Grid<List<
             List<x_cell, s_cell, s_cell>,
@@ -142,7 +127,7 @@ using SBlock = Block<BlockType::S, 0,
             List<s_cell, s_cell, x_cell>,
             List<x_cell, s_cell, x_cell>>>>>;
 
-using TBlock = Block<BlockType::T, 0,
+using TBlock = Block<0,
     List<
         Grid<List<
             List<x_cell, t_cell, x_cell>,
@@ -161,7 +146,7 @@ using TBlock = Block<BlockType::T, 0,
             List<t_cell, t_cell, x_cell>,
             List<x_cell, t_cell, x_cell>>>>>;
 
-using ZBlock = Block<BlockType::Z, 0,
+using ZBlock = Block<0,
     List<
         Grid<List<
             List<z_cell, z_cell, x_cell>,
@@ -188,17 +173,10 @@ using blocks = List<IBlock, JBlock, LBlock, OBlock, SBlock, TBlock, ZBlock>;
 /*------------------------------------------------------------------------------
     Serialize
 */
-template <BlockType x>
-struct Serialize<SerializableValue<BlockType, x>> {
-    using type =
-        serialize_enum<decltype("BlockType"_string), BlockType, x>;
-};
-
-template <BlockType k, size_t r, typename o>
-struct Serialize<Block<k, r, o>> {
+template <size_t r, typename o>
+struct Serialize<Block<r, o>> {
     using type =
         serialize_class<decltype("Block"_string),
-            SerializableValue<BlockType, k>,
             SerializableValue<size_t, r>,
             o>;
 };
