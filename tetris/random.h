@@ -4,11 +4,10 @@
 #include "string.h"
 
 /**
-    Random number generator/
+    Random number generator.
 */
 template <typename T, T s, T max = std::numeric_limits<T>::max(), T a = 1103515245, T c = 12345>
 struct LinearGenerator {
-    using type = T;
     static constexpr const T value = ((long)s * a + c) % max;
     using next = LinearGenerator<T, value, max, a, c>;
 };

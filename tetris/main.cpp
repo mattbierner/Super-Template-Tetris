@@ -57,7 +57,7 @@ struct Play<s, x, xs...> {
     Although the entire game is 'played' at compile time, the program must be run
     to display the current game state and serialize it for the next run.
     
-    This file contains the only pieces of runtime bullshit required.
+    This file contains the onlyruntime bullshit required.
 */
 int main(int argc, const char* argv[])
 {

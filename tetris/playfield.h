@@ -110,3 +110,13 @@ static_assert(
                 Position<0, 0>,
                 empty_pixel,
                 gen_grid<2, 2, Pixel<'x'>>>>>::value, "");
+
+/**
+    Remove row `i` from grid, adding a new empty row at the top.
+*/
+template <size_t i, typename g>
+using playfield_remove_row =
+    grid_cons_row<
+        gen<g::width, empty_pixel>,
+        grid_remove_row<i, g>>;
+

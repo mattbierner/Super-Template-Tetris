@@ -47,12 +47,12 @@ struct State {
     using nextBlock = typename currentBlockGenerator::next::value;
 
     /**
-        Is the block currently colliding with any pieces in the playfield?
+        Is the block currently colliding with any piece in the playfield?
     */
     static constexpr const bool is_collision =
         playfield_is_colliding<
             position,
-            typename block::pieces,
+            typename block::piece,
             world>;
     
     template <typename newPos>
@@ -87,7 +87,7 @@ using place_initial_piece =
     typename s
         ::template set_position<
             Position<
-                (s::world::width / 2) - (s::nextBlock::pieces::width / 2),
+                (s::world::width / 2) - (s::nextBlock::piece::width / 2),
                 0>>
         ::template set_block<typename s::nextBlock>
         ::template set_random<typename s::random::next>;
@@ -115,7 +115,7 @@ using place_piece =
         typename s::template set_world<
             buffer_draw_grid<
                 typename s::position,
-                typename s::block::pieces,
+                typename s::block::piece,
                 typename s::world>>>;
 
 /**
@@ -180,6 +180,22 @@ struct move_block<Input::LRot, state> {
         ::reset_delay;
 };
 
+template <typename state>
+struct move_block<Input::Hard, state> {
+    using type = typename hard_drop<state>
+        ::template set_delay<static_cast<size_t>(-1)>;
+};
+
+template <typename state>
+struct move_block<Input::Soft, state> {
+    using type = typename hard_drop<state>::reset_delay;
+};
+
+template <typename state>
+struct move_block<Input::Down, state> {
+    using type = typename Drop<4, state>::type::reset_delay;
+};
+
 /**
     Move the block in response to player input.
     
@@ -189,21 +205,6 @@ template <Input input, typename state>
 struct move {
     using next = typename move_block<input, state>::type;
     using type = std::conditional_t<next::is_collision, state, next>;
-};
-
-template <typename state>
-struct move<Input::Hard, state> {
-    using type = typename place_piece<hard_drop<state>>::reset_delay;
-};
-
-template <typename state>
-struct move<Input::Soft, state> {
-    using type = typename hard_drop<state>::reset_delay;
-};
-
-template <typename state>
-struct move<Input::Down, state> {
-    using type = typename Drop<4, state>::type::reset_delay;
 };
 
 /**
@@ -255,11 +256,7 @@ struct step {
         template <typename p, typename c>
         using apply = identity<
             typename p::template set_world<
-                grid_cons_row<
-                    gen<p::world::width, empty_pixel>,
-                    grid_remove_row<
-                        c::value,
-                        typename p::world>>>>;
+                playfield_remove_row<c::value, typename p::world>>>;
     };
     
     template <typename s,
@@ -328,11 +325,18 @@ struct ToString<
         Pixel<'+', default_gfx>,
         empty_buffer<world::width + 2 + uiSize, world::height + 2>>;
     
+    // Draw death area
+    using death_buffer = buffer_draw_rect<
+        Position<1, 1>,
+        Size<world::width, deathZoneHeight>,
+        Pixel<'-', default_gfx>,
+        initial_buffer>;
+    
     // Draw next block
     using next_block = buffer_draw_grid<
         Position<world::width + 2 + 2, 2>,
-        typename self::nextBlock::pieces,
-        initial_buffer>;
+        typename self::nextBlock::piece,
+        death_buffer>;
     
     // Draw Score
     using score_buffer =
@@ -358,18 +362,11 @@ struct ToString<
             default_gfx,
             next_block>>>;
     
-    // Draw death area
-    using death_buffer = buffer_draw_rect<
-        Position<1, 1>,
-        Size<world::width, deathZoneHeight>,
-        Pixel<'-', default_gfx>,
-        score_buffer>;
-    
     // draw playfield
     using play_buffer = buffer_draw_grid<
         Position<1, 1>,
         world,
-        death_buffer>;
+        score_buffer>;
 
     // Draw ghost
     using ghost_buffer = buffer_draw_grid<
@@ -377,13 +374,13 @@ struct ToString<
         typename hard_drop<self>::block::as_ghost_piece,
         play_buffer>;
     
-    // Draw current block
-    using buffer = buffer_draw_grid<
+    using block_buffer = buffer_draw_grid<
         Position<1, 1>::add<position>,
-        typename block::pieces,
+        typename block::piece,
         ghost_buffer>;
-
-    using type = to_string<buffer>;
+    
+    // Draw current block
+    using type = to_string<block_buffer>;
 };
 
 /*------------------------------------------------------------------------------

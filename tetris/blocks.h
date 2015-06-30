@@ -12,7 +12,7 @@
 template <size_t r, typename o>
 struct Block {
     using orientations = o;
-    using pieces = get<r, o>;
+    using piece = get<r, o>;
     
     using rotateCw = Block<(r + 1) % o::size, o>;
     using rotateCcw = Block<r == 0 ? o::size - 1 : r - 1, o>;
@@ -28,7 +28,7 @@ struct Block {
     /**
         Get a ghost piece to show where a block will land.
     */
-    using as_ghost_piece = fmap<ToGhostPiece, pieces>;
+    using as_ghost_piece = fmap<ToGhostPiece, piece>;
 };
 
 using x_cell = empty_pixel;
