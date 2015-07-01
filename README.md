@@ -3,6 +3,7 @@
 Implementation of Tetris as a C++ template metaprogram. All game logic is implemented at compile time.
 The runtime program is only needed to print out the game world and serialize it for next play.
 
+[Post discussing implementation](http://blog.mattbierner.com/stupid-template-tricks-super-template-tetris).
 
 ## Playing
 Plays one step of the game every time the game is recompiled. 
